@@ -1,15 +1,14 @@
-using System;
 using UnityEngine;
 
 namespace narkdagas.tbcs {
     public class MouseWorld : MonoBehaviour {
 
-        private static MouseWorld instance;
-        
-        [SerializeField] private LayerMask mousePlaneLayerMask;
+        private static MouseWorld _instance;
+
+        public LayerMask validClickMasks;
 
         private void Awake() {
-            instance = this;
+            _instance = this;
         }
 
         void Update() {
@@ -17,9 +16,13 @@ namespace narkdagas.tbcs {
         }
 
         public static Vector3 GetPosition() {
-            var screenPointToRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(screenPointToRay, out var hit, float.MaxValue, instance.mousePlaneLayerMask);
+            GetClickDataForMask(out var hit, _instance.validClickMasks);
             return hit.point;
+        }
+
+        public static bool GetClickDataForMask(out RaycastHit hit, LayerMask hitMask) {
+            var screenPointToRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            return Physics.Raycast(screenPointToRay, out hit, float.MaxValue, hitMask);
         }
     }
 }
