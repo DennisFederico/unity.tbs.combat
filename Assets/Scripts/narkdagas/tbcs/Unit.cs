@@ -1,3 +1,4 @@
+using narkdagas.tbcs;
 using UnityEngine;
 
 public class Unit : MonoBehaviour {
@@ -12,6 +13,10 @@ public class Unit : MonoBehaviour {
 
     private void Move(Vector3 targetPos) {
         this._targetPosition = targetPos;
+        _moveStartTime = Time.time;
+        _moveDistance = Vector3.Distance(transform.position, targetPos);
+        _moveTime = _moveDistance / moveSpeed;
+        _startPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -19,18 +24,13 @@ public class Unit : MonoBehaviour {
         if (Vector3.Distance(transform.position, _targetPosition) > stoppingDistance) {
             float distCovered = (Time.time - _moveStartTime) * moveSpeed / _moveDistance;
             float timeElapsed = (Time.time - _moveStartTime) / _moveTime;
-            transform.position = Vector3.Slerp(_startPosition, _targetPosition, timeElapsed);
+            transform.position = Vector3.Lerp(_startPosition, _targetPosition, timeElapsed);
             //Vector3 moveDir = (_targetPosition - transform.position).normalized;
             //transform.position += moveDir * (moveSpeed * Time.deltaTime);
         }
 
-        if (Input.GetKeyDown(KeyCode.T)) {
-            var targetPos = new Vector3(4, 0, 4);
-            _moveStartTime = Time.time;
-            _moveDistance = Vector3.Distance(transform.position, targetPos);
-            _moveTime = _moveDistance / moveSpeed;
-            _startPosition = transform.position;
-            Move(targetPos);
+        if (Input.GetMouseButtonDown(0)) {
+            Move(MouseWorld.GetPosition());
         }
     }
 }
