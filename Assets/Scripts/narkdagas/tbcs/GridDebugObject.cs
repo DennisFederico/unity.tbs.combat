@@ -11,7 +11,7 @@ namespace narkdagas.tbcs {
             _text = GetComponentInChildren<TextMeshPro>();
         }
         
-        private void Start() {
+        private void Update() {
             _text.text = _gridObject.ToString();
         }
 

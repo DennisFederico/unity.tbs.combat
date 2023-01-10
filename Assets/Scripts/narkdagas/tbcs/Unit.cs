@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace narkdagas.tbcs {
@@ -8,6 +9,7 @@ namespace narkdagas.tbcs {
         [SerializeField] private float rotationSpeed = 10f;
         [SerializeField] private float stoppingDistance = .1f;
         [SerializeField] private float stoppingAngle = .1f;
+        private GridPosition _currentGridPosition;
         private Vector3 _targetPosition;
         private Vector3 _targetDirection;
     
@@ -17,6 +19,11 @@ namespace narkdagas.tbcs {
             unitAnimator = GetComponentInChildren<Animator>();
             _targetDirection = transform.forward;
             _targetPosition = transform.position;
+        }
+
+        private void Start() {
+            _currentGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+            LevelGrid.Instance.AddUnitAtGridPosition(_currentGridPosition, this);
         }
 
         internal void Move(Vector3 targetPos) {
@@ -40,6 +47,16 @@ namespace narkdagas.tbcs {
             } else {
                 unitAnimator.SetBool(AnimIsWalking, false);
             }
+
+            var newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+            if (newGridPosition != _currentGridPosition) {
+                LevelGrid.Instance.UnitMovedGridPosition(this, _currentGridPosition, newGridPosition);
+                _currentGridPosition = newGridPosition;
+            }
+        }
+
+        public override string ToString() {
+            return transform.gameObject.name;
         }
     }
 }
