@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using narkdagas.tbcs.grid;
 using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
@@ -14,5 +16,14 @@ namespace narkdagas.tbcs.actions {
         }
 
         public abstract string GetActionNameLabel();
+
+        public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+        
+        
+        public virtual bool IsValidActionGridPosition(GridPosition gridPosition) {
+            return GetValidActionGridPositionList().Contains(gridPosition);
+        }
+
+        public abstract List<GridPosition> GetValidActionGridPositionList();
     }
 }

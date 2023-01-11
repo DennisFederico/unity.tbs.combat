@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using narkdagas.tbcs.grid;
 using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
@@ -26,6 +28,15 @@ namespace narkdagas.tbcs.actions {
 
         public override string GetActionNameLabel() {
             return "Spin";
+        }
+
+        public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
+            Spin(onActionComplete);
+        }
+        
+        public override List<GridPosition> GetValidActionGridPositionList() {
+            GridPosition unitGridPosition = Unit.GetGridPosition();
+            return new List<GridPosition>() { unitGridPosition };
         }
     }
 }

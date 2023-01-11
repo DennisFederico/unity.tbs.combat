@@ -51,9 +51,9 @@ namespace narkdagas.tbcs.grid {
         private void UpdateGridVisual() {
             var selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
             if (selectedUnit) {
-                var list = selectedUnit.GetMoveAction().GetValidActionGridPositionList();
                 HideAllGridVisuals();
-                ShowGridPositionsVisuals(list);                    
+                var gridList = UnitActionSystem.Instance.GetSelectedAction().GetValidActionGridPositionList();
+                ShowGridPositionsVisuals(gridList);                    
             }
         }
     }

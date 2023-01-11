@@ -28,6 +28,10 @@ namespace narkdagas.tbcs.actions {
             return "Move";
         }
 
+        public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
+            Move(gridPosition, onActionComplete);
+        }
+
         void Update() {
             if (!IsActive) return;
             //First Rotate
@@ -56,11 +60,7 @@ namespace narkdagas.tbcs.actions {
             OnActionComplete = onActionComplete;
         }
 
-        public bool IsValidActionGridPosition(GridPosition gridPosition) {
-            return GetValidActionGridPositionList().Contains(gridPosition);
-        }
-
-        public List<GridPosition> GetValidActionGridPositionList() {
+        public override List<GridPosition> GetValidActionGridPositionList() {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
             var unitGridPosition = Unit.GetGridPosition();
 
