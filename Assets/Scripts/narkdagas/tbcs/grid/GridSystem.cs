@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.grid {
     public struct GridPosition : IEquatable<GridPosition> {
 
         public int X;
@@ -15,6 +15,14 @@ namespace narkdagas.tbcs {
 
         public override string ToString() {
             return $"[{X},{Z}]";
+        }
+
+        public static GridPosition operator +(GridPosition a, GridPosition b) {
+            return new GridPosition(a.X + b.X, a.Z + b.Z);
+        }
+        
+        public static GridPosition operator -(GridPosition a, GridPosition b) {
+            return new GridPosition(a.X - b.X, a.Z - b.Z);
         }
 
         public static bool operator == (GridPosition a, GridPosition b) {
@@ -39,16 +47,25 @@ namespace narkdagas.tbcs {
 
     }
 
+    public struct GridDimension {
+        public int Width;
+        public int Length;
+        public GridDimension(int width, int length) {
+            Width = width;
+            Length = length;
+        }
+    }
+    
     public class GridSystem {
-        private int _width;
-        private int _length;
+        private GridDimension _gridDimension;
         private float _cellSize;
         private GridObject[,] _gridObjects;
         private Transform _debugParent;
 
         public GridSystem(int width, int length, float cellSize, bool drawGrid = false, Transform debugPrefab = null) {
-            _width = width;
-            _length = length;
+            // _width = width;
+            // _length = length;
+            _gridDimension = new GridDimension(width, length);
             _cellSize = cellSize;
             _gridObjects = new GridObject[width, length];
 
@@ -67,6 +84,10 @@ namespace narkdagas.tbcs {
             }
         }
 
+        public GridDimension GetGridDimension() {
+            return _gridDimension;
+        }
+        
         //This returns the center a Vector3 center on the Grid
         private Vector3 GetWorldPosition(int x, int z) {
             return new Vector3(x, .2f, z) * _cellSize;
@@ -84,17 +105,18 @@ namespace narkdagas.tbcs {
             //return new GridPosition((int)(worldPosition.x / _cellSize), (int)(worldPosition.z / _cellSize));
         }
         
+        public bool IsValidGridPosition(GridPosition gridPosition) {
+            return gridPosition.X >= 0 &&
+                   gridPosition.X < _gridDimension.Width &&
+                   gridPosition.Z >= 0 &&
+                   gridPosition.Z < _gridDimension.Length;
+        }
+        
         public GridObject GetGridObject(GridPosition gridPosition) {
             return IsValidGridPosition(gridPosition) ? _gridObjects[gridPosition.X, gridPosition.Z] : null;
         }
-
-        private bool IsValidGridPosition(GridPosition gridPosition) {
-            return gridPosition.X >= 0 &&
-                   gridPosition.X < _width &&
-                   gridPosition.Z >= 0 &&
-                   gridPosition.Z < _length;
-        }
-
+        
+        //TODO MOVE DEBUG STUFF TO A "PARTIAL" FILE?
         private void DebugPaintGridPosition(GridPosition gridPosition) {
             //Assuming the cell origin is at the center
             var cellCenter = GetWorldPosition(gridPosition);

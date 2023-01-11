@@ -1,4 +1,6 @@
 using System;
+using narkdagas.tbcs.actions;
+using narkdagas.tbcs.grid;
 using UnityEngine;
 
 namespace narkdagas.tbcs {
@@ -30,10 +32,17 @@ namespace narkdagas.tbcs {
                         return;
                     }
                     if (1 << hit.collider.gameObject.layer == floorLayerMask) {
-                        selectedUnit.Move(hit.point);
+                        var mouseGridPosition = LevelGrid.Instance.GetGridPosition(hit.point);
+                        if (selectedUnit.GetMoveAction().IsValidActionGridPosition(mouseGridPosition)) {
+                            selectedUnit.GetMoveAction().Move(mouseGridPosition);    
+                        }
                         return;
                     }
                 }
+            }
+
+            if (Input.GetMouseButtonDown(1)) {
+                selectedUnit.GetSpinAction().ToggleSpin();
             }
         }
 

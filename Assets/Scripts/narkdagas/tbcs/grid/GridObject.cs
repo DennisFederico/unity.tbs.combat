@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.grid {
     
     public class GridObject {
         //TODO these should be set by the Grid System when adding the GridObject
@@ -33,6 +33,10 @@ namespace narkdagas.tbcs {
 
         public List<Unit> GetUnitList() {
             return UnitList;
+        }
+
+        public bool IsEmpty() {
+            return UnitList.Count == 0;
         }
     }
 }

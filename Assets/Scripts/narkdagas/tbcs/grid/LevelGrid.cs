@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.grid {
     public class LevelGrid : MonoBehaviour {
 
         public static LevelGrid Instance { get; private set; }
@@ -17,7 +16,7 @@ namespace narkdagas.tbcs {
         
         private void Awake() {
             if (Instance != null) {
-                Debug.LogError($"There's more than one LevelGrid in the scene! {transform} -{Instance}");
+                Debug.LogError($"There's more than one LevelGrid in the scene! {transform} - {Instance}");
                 Destroy(gameObject);
                 return;
             }
@@ -57,14 +56,14 @@ namespace narkdagas.tbcs {
             AddUnitAtGridPosition(to, unit);
         }
 
+        //PASS THROUGH TO GRID SYSTEM
+        public GridDimension GetGridDimension() => _gridSystem.GetGridDimension();
         public GridPosition GetGridPosition(Vector3 worldPos) => _gridSystem.GetGridPosition(worldPos);
+        public Vector3 GetGridWorldPosition(GridPosition gridPosition) => _gridSystem.GetWorldPosition(gridPosition);
+        public bool IsValidGridPosition(GridPosition gridPosition) => _gridSystem.IsValidGridPosition(gridPosition);
+        public bool IsGridPositionFree(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).IsEmpty();
         
+        //SHOULD WE HANDLE THE INVOCATIONS TO THE VISUAL SYSTEM TOO?
         
-        // private void DebugGridObjectInstance(GridPosition gridPosition, Transform debugPrefab) {
-        //     var instance = Object.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity);
-        //     if (instance.TryGetComponent<GridDebugObject>(out var gdo)) {
-        //         gdo.SetGridObject(GetGridObject(gridPosition));
-        //     }
-        // }
     }
 }

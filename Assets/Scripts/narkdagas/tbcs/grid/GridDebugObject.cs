@@ -1,8 +1,7 @@
-using System;
 using TMPro;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.grid {
     public class GridDebugObject : MonoBehaviour {
         private TextMeshPro _text;
         private GridObject _gridObject;
