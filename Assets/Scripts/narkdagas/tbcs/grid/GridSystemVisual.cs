@@ -8,8 +8,8 @@ namespace narkdagas.tbcs.grid {
         public static GridSystemVisual Instance { get; private set; }
         
         [SerializeField] private Transform gridVisualSingle;
-
         private GridSystemVisualSingle[,] _gridVisualsArray;
+        private Transform _visualsParent;
 
         private void Awake() {
             if (Instance != null) {
@@ -23,9 +23,10 @@ namespace narkdagas.tbcs.grid {
         private void Start() {
             var gridDimension = LevelGrid.Instance.GetGridDimension();
             _gridVisualsArray = new GridSystemVisualSingle[gridDimension.Width, gridDimension.Length];
+            _visualsParent = new GameObject("GridVisuals").transform;
             for (int x = 0; x < gridDimension.Width; x++) {
                 for (int z = 0; z < gridDimension.Length; z++) {
-                    var gridVisual = Instantiate(gridVisualSingle, LevelGrid.Instance.GetGridWorldPosition(new GridPosition(x, z)), Quaternion.identity);
+                    var gridVisual = Instantiate(gridVisualSingle, LevelGrid.Instance.GetGridWorldPosition(new GridPosition(x, z)), Quaternion.identity, _visualsParent);
                     _gridVisualsArray[x, z] = gridVisual.GetComponent<GridSystemVisualSingle>();
                 }
             }

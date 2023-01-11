@@ -7,10 +7,12 @@ namespace narkdagas.tbcs {
         private GridPosition _currentGridPosition;
         private MoveAction _moveAction;
         private SpinAction _spinAction;
+        private BaseAction[] _baseActions;
 
         private void Awake() {
             _moveAction = GetComponent<MoveAction>();
             _spinAction = GetComponent<SpinAction>();
+            _baseActions = GetComponents<BaseAction>();
         }
 
         private void Start() {
@@ -25,6 +27,10 @@ namespace narkdagas.tbcs {
                 LevelGrid.Instance.UnitMovedGridPosition(this, _currentGridPosition, newGridPosition);
                 _currentGridPosition = newGridPosition;
             }
+        }
+
+        public BaseAction[] GetActions() {
+            return _baseActions;
         }
 
         public MoveAction GetMoveAction() {

@@ -133,8 +133,7 @@ namespace narkdagas.tbcs.grid {
         }
         
         private void DebugCreateDebugGridObject(GridPosition gridPosition, Transform debugPrefab, Transform parent) {
-            var instance = Object.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity);
-            instance.SetParent(parent);
+            var instance = Object.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity, parent);
             if (instance.TryGetComponent<GridDebugObject>(out var gdo)) {
                 gdo.SetGridObject(GetGridObject(gridPosition));
             }

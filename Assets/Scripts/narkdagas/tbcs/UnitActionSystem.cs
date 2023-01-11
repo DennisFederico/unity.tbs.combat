@@ -11,7 +11,9 @@ namespace narkdagas.tbcs {
         public LayerMask unitLayerMask;
         public LayerMask floorLayerMask;
         public event EventHandler OnSelectedUnitChange;
-        [SerializeField] private Unit selectedUnit;
+        private Unit _selectedUnit;
+        private BaseAction _selectedAction;
+        private bool _isActionRunning;
 
         private void Awake() {
             if (Instance != null) {
@@ -23,36 +25,61 @@ namespace narkdagas.tbcs {
         }
 
         private void Update() {
+            if (_isActionRunning) return;
+            if (TryHandleUnitSelection()) return;
+            HandleSelectedAction();
+        }
 
+        private bool TryHandleUnitSelection() {
             if (Input.GetMouseButtonDown(0)) {
-                if (MouseWorld.GetClickDataForMask(out var hit, validActionMasks)) {
-                    //Handle based on the mask clicked
-                    if (1 << hit.collider.gameObject.layer == unitLayerMask) {
-                        HandleUnitSelected(hit.collider.gameObject.GetComponent<Unit>());
-                        return;
-                    }
-                    if (1 << hit.collider.gameObject.layer == floorLayerMask) {
-                        var mouseGridPosition = LevelGrid.Instance.GetGridPosition(hit.point);
-                        if (selectedUnit.GetMoveAction().IsValidActionGridPosition(mouseGridPosition)) {
-                            selectedUnit.GetMoveAction().Move(mouseGridPosition);    
-                        }
-                        return;
+                if (MouseWorld.GetClickDataForMask(out var hit, unitLayerMask)) {
+                    if (hit.transform.TryGetComponent<Unit>(out Unit unit)) {
+                        SetSelectedUnit(unit);
+                        return true;
                     }
                 }
             }
+            return false;
+        }
 
-            if (Input.GetMouseButtonDown(1)) {
-                selectedUnit.GetSpinAction().ToggleSpin();
+        private void HandleSelectedAction() {
+            if (Input.GetMouseButtonDown(0)) {
+                var mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+                switch (_selectedAction) {
+                    case MoveAction moveAction:
+                        if (moveAction.IsValidActionGridPosition(mouseGridPosition)) {
+                            SetActionRunning();
+                            moveAction.Move(mouseGridPosition, ClearActionRunning);                            
+                        }
+                        break;
+                    case SpinAction spinAction:
+                        SetActionRunning();
+                        spinAction.Spin(ClearActionRunning);
+                        break;
+                }
             }
         }
 
-        private void HandleUnitSelected(Unit unit) {
-            selectedUnit = unit;
+        private void SetActionRunning() {
+            _isActionRunning = true;
+        }
+        
+        private void ClearActionRunning() {
+            _isActionRunning = false;
+        }
+
+        private void SetSelectedUnit(Unit unit) {
+            _selectedUnit = unit;
+            SetSelectedAction(_selectedUnit.GetMoveAction());
             OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
         }
 
+        public void SetSelectedAction(BaseAction baseAction) {
+            _selectedAction = baseAction;
+        }
+        
         public Unit GetSelectedUnit() {
-            return selectedUnit;
+            return _selectedUnit;
         }
     }
 }
