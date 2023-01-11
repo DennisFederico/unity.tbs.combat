@@ -1,6 +1,7 @@
 using System;
 using narkdagas.tbcs.actions;
 using narkdagas.tbcs.grid;
+using narkdagas.ui;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -8,7 +9,9 @@ namespace narkdagas.tbcs {
     public class UnitActionSystem : MonoBehaviour {
         public static UnitActionSystem Instance { get; private set; }
         public LayerMask unitLayerMask;
-        public event EventHandler OnSelectedUnitChange;
+        public event EventHandler OnSelectedUnitChanged;
+        public event EventHandler OnSelectedActionChanged;
+        public event EventHandler<bool> OnActionRunningChanged;
         private Unit _selectedUnit;
         private BaseAction _selectedAction;
         private bool _isActionRunning;
@@ -61,10 +64,16 @@ namespace narkdagas.tbcs {
 
         private void SetActionRunning() {
             _isActionRunning = true;
+            OnActionRunningChanged?.Invoke(this, _isActionRunning);
+            //UnitActionSystemUI.Instance.SetShowActionsVisual(false);
+            //UnitActionSystemUI.Instance.ToggleShowActionsVisual();
         }
 
         private void ClearActionRunning() {
             _isActionRunning = false;
+            OnActionRunningChanged?.Invoke(this, _isActionRunning);
+            //UnitActionSystemUI.Instance.SetShowActionsVisual(true);
+            //UnitActionSystemUI.Instance.ToggleShowActionsVisual();
         }
 
         public Unit GetSelectedUnit() {
@@ -74,7 +83,7 @@ namespace narkdagas.tbcs {
         private void SetSelectedUnit(Unit unit) {
             _selectedUnit = unit;
             SetSelectedAction(_selectedUnit.GetMoveAction());
-            OnSelectedUnitChange?.Invoke(this, EventArgs.Empty);
+            OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public BaseAction GetSelectedAction() {
@@ -83,7 +92,7 @@ namespace narkdagas.tbcs {
         
         public void SetSelectedAction(BaseAction baseAction) {
             _selectedAction = baseAction;
+            OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);
         }
-        
     }
 }

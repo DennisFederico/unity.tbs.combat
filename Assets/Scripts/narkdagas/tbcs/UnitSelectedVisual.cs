@@ -11,8 +11,8 @@ namespace narkdagas.tbcs {
         }
 
         private void Start() {
-            //UnitActionSystem.Instance.OnSelectedUnitChange += UnitActionSystem_OnSelectedUnitChanged;
-            UnitActionSystem.Instance.OnSelectedUnitChange += (_, _) => {
+            //UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
+            UnitActionSystem.Instance.OnSelectedUnitChanged += (_, _) => {
                 UpdateVisual();
             };
             UpdateVisual();
