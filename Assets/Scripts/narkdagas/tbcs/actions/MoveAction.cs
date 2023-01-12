@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public class MoveAction : BaseAction {
-        [SerializeField] private Animator unitAnimator;
+        public override event EventHandler ActionStarted;
+        public override event EventHandler ActionCompleted;
         [SerializeField] private int maxMoveGridDistance = 4;
         [SerializeField] private float moveSpeed = 4f;
         [SerializeField] private float rotationSpeed = 10f;
@@ -14,14 +15,11 @@ namespace narkdagas.tbcs.actions {
 
         private Vector3 _targetPosition;
         private Vector3 _targetDirection;
-
-        private static readonly int AnimIsWalking = Animator.StringToHash("IsWalking");
-
+        
         protected override void Awake() {
             base.Awake();
             _targetDirection = transform.forward;
             _targetPosition = transform.position;
-            unitAnimator = GetComponentInChildren<Animator>();
         }
 
         public override string GetActionNameLabel() {
@@ -29,7 +27,9 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
-            Move(gridPosition, onActionComplete);
+            ActionStart(onActionComplete);
+            ActionStarted?.Invoke(this, EventArgs.Empty);
+            Move(gridPosition);
         }
 
         void Update() {
@@ -44,20 +44,16 @@ namespace narkdagas.tbcs.actions {
             if (angle < 90) {
                 if (Vector3.Distance(transform.position, _targetPosition) > stoppingDistance) {
                     transform.position += _targetDirection * (moveSpeed * Time.deltaTime);
-                    unitAnimator.SetBool(AnimIsWalking, true);
                 } else {
-                    unitAnimator.SetBool(AnimIsWalking, false);
-                    IsActive = false;
-                    OnActionComplete();
+                    ActionComplete();
+                    ActionCompleted?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
-        public void Move(GridPosition gridPosition, Action onActionComplete) {
+        public void Move(GridPosition gridPosition) {
             _targetPosition = LevelGrid.Instance.GetGridWorldPosition(gridPosition);
             _targetDirection = (_targetPosition - transform.position).normalized;
-            IsActive = true;
-            OnActionComplete = onActionComplete;
         }
 
         public override List<GridPosition> GetValidActionGridPositionList() {

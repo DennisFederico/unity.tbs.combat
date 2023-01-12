@@ -4,9 +4,9 @@ using UnityEngine;
 namespace narkdagas.tbcs {
     public class TurnSystem : MonoBehaviour {
         public static TurnSystem Instance { get; private set; }
-
-        public event EventHandler OnTurnChanged;
+        public event EventHandler<bool> OnTurnChanged;
         private int _turnNumber = 1;
+        private bool _isPlayerTurn = true;
 
         private void Awake() {
             if (Instance != null) {
@@ -20,11 +20,16 @@ namespace narkdagas.tbcs {
 
         public void NextTurn() {
             _turnNumber++;
-            OnTurnChanged?.Invoke(this, EventArgs.Empty);
+            _isPlayerTurn = !_isPlayerTurn;
+            OnTurnChanged?.Invoke(this, _isPlayerTurn);
         }
 
         public int GetCurrentTurn() {
             return _turnNumber;
+        }
+
+        public bool IsPlayerTurn() {
+            return _isPlayerTurn;
         }
     }
 }

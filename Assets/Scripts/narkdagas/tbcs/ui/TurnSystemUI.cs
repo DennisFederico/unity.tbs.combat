@@ -1,10 +1,8 @@
-using System;
-using narkdagas.tbcs;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace narkdagas.ui {
+namespace narkdagas.tbcs.ui {
     public class TurnSystemUI : MonoBehaviour {
 
         public static TurnSystemUI Instance { get; private set; }
@@ -25,16 +23,20 @@ namespace narkdagas.ui {
         private void Start() {
             endTurnButton.onClick.AddListener(() => {
                 TurnSystem.Instance.NextTurn();
-                UpdateTurnText();
+                //UpdateTurnText(TurnSystem.Instance.IsPlayerTurn());
             });
-            
-            TurnSystem.Instance.OnTurnChanged += (_, _) => UpdateTurnText();
-            
-            UpdateTurnText();
+            TurnSystem.Instance.OnTurnChanged += (_, isPlayerTurn) => UpdateTurnText(isPlayerTurn);
+            TurnSystem.Instance.OnTurnChanged += (_, isPlayerTurn) => UpdateEndTurnButtonVisibility(isPlayerTurn);
+            UpdateTurnText(TurnSystem.Instance.IsPlayerTurn());
         }
 
-        private void UpdateTurnText() {
-            textCounter.text = $"TURN {TurnSystem.Instance.GetCurrentTurn()}";
+        private void UpdateTurnText(bool isPlayerTurn) {
+            string teamLabel = isPlayerTurn ? "Player" : "Enemies" ;
+            textCounter.text = $"TURN {TurnSystem.Instance.GetCurrentTurn()} - ({teamLabel})";
+        }
+
+        private void UpdateEndTurnButtonVisibility(bool isPlayerTurn) {
+            endTurnButton.gameObject.SetActive(isPlayerTurn);
         }
     }
 }

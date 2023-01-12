@@ -9,7 +9,7 @@ namespace narkdagas.camera {
         [SerializeField] private float cameraZoomSpeed = 5f;
         [SerializeField] private float minCameraZoomValue = 2f;
         [SerializeField] private float maxCameraZoomValue = 14f;
-        [SerializeField] private float screenMoveMargin = 25f;
+        [SerializeField] private float screenMoveMargin = 5f;
         [SerializeField] private CinemachineVirtualCamera vCamera;
         private CinemachineTransposer _vCameraTransposer;
         private Vector3 _targetFollowOffset;

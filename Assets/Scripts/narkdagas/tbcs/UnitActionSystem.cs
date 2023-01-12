@@ -25,8 +25,17 @@ namespace narkdagas.tbcs {
             Instance = this;
         }
 
+        private void Start() {
+            TurnSystem.Instance.OnTurnChanged += (_, isPlayerTurn) => {
+                if (!isPlayerTurn) {
+                    ClearSelectedUnit();
+                }
+            };
+        }
+
         private void Update() {
             if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (!TurnSystem.Instance.IsPlayerTurn()) return;
             //I LIKE TO BE ABLE TO SWITCH UNITS WHILE THE OTHER UNIT IS IN AN ACTION
             //SWAP THE NEXT TWO LINES OTHERWISE
             //TODO IT WOULD BE GREAT FOR EACH UNIT TO HAVE THEIR "RUNNING ACTION" FLAG AND ACT IN PARALLEL
@@ -38,9 +47,9 @@ namespace narkdagas.tbcs {
         private bool TryHandleUnitSelection() {
             if (Input.GetMouseButtonDown(0)) {
                 if (MouseWorld.GetClickDataForMask(out var hit, unitLayerMask)) {
-                    if (hit.transform.TryGetComponent<Unit>(out Unit unit)) {
+                    if (hit.transform.TryGetComponent(out Unit unit)) {
                         //DONT SELECT THE UNIT IF IT IS ALREADY SELECTED
-                        if (unit != _selectedUnit) {
+                        if (unit != _selectedUnit && !unit.IsEnemyUnit()) {
                             SetSelectedUnit(unit);
                             return true;
                         }
@@ -85,12 +94,23 @@ namespace narkdagas.tbcs {
             OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        public void ClearSelectedUnit() {
+            ClearSelectedAction();
+            _selectedUnit = null;
+            OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public BaseAction GetSelectedAction() {
             return _selectedAction;
         }
 
         public void SetSelectedAction(BaseAction baseAction) {
             _selectedAction = baseAction;
+            OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ClearSelectedAction() {
+            _selectedAction = null;
             OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);
         }
     }

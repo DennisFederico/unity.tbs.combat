@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using narkdagas.tbcs;
 using narkdagas.tbcs.actions;
 using TMPro;
 using UnityEngine;
 
-namespace narkdagas.ui {
+namespace narkdagas.tbcs.ui {
     public class UnitActionSystemUI : MonoBehaviour {
         public static UnitActionSystemUI Instance { get; private set; }
 
@@ -28,7 +27,7 @@ namespace narkdagas.ui {
             UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
             UnitActionSystem.Instance.OnActionRunningChanged += UnitActionSystem_OnActionRunningChanged;
-            TurnSystem.Instance.OnTurnChanged += (_, _) => UpdateActionPoints();
+            TurnSystem.Instance.OnTurnChanged += (_,_) => UpdateActionPoints();
             CreateUnitActionButtons();
         }
 

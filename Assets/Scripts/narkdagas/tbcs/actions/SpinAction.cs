@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public class SpinAction : BaseAction {
+        public override event EventHandler ActionStarted;
+        public override event EventHandler ActionCompleted;
         
         private float _totalSpin;
 
@@ -15,15 +17,12 @@ namespace narkdagas.tbcs.actions {
             transform.Rotate(Vector3.up, spinAmount);
             _totalSpin += spinAmount;
             if (_totalSpin >= 360) {
-                IsActive = false;
-                OnActionComplete();
+                ActionComplete();
             }
         }
 
-        public void Spin(Action onActionComplete) {
-            IsActive = true;
+        private void Spin() {
             _totalSpin = 0f;
-            OnActionComplete = onActionComplete;
         }
 
         public override string GetActionNameLabel() {
@@ -31,7 +30,8 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
-            Spin(onActionComplete);
+            ActionStart(onActionComplete);
+            Spin();
         }
         
         public override List<GridPosition> GetValidActionGridPositionList() {

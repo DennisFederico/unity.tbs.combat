@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public abstract class BaseAction : MonoBehaviour {
-        //public delegate void OnActionCompleteDelegate();
-        
+        public abstract event EventHandler ActionStarted;
+        public abstract event EventHandler ActionCompleted;
         protected Unit Unit;
         protected bool IsActive;
         protected Action OnActionComplete;
@@ -20,6 +20,15 @@ namespace narkdagas.tbcs.actions {
 
         public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
         
+        protected void ActionStart(Action onActionComplete) {
+            IsActive = true;
+            OnActionComplete = onActionComplete;
+        }
+
+        protected void ActionComplete() {
+            IsActive = false;
+            OnActionComplete();
+        }
         
         public virtual bool IsValidActionGridPosition(GridPosition gridPosition) {
             return GetValidActionGridPositionList().Contains(gridPosition);
