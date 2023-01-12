@@ -10,6 +10,7 @@ namespace narkdagas.tbcs.actions {
         protected Unit Unit;
         protected bool IsActive;
         protected Action OnActionComplete;
+        protected int apCost = 1;
 
         protected virtual void Awake() {
             Unit = GetComponent<Unit>();
@@ -22,6 +23,10 @@ namespace narkdagas.tbcs.actions {
         
         public virtual bool IsValidActionGridPosition(GridPosition gridPosition) {
             return GetValidActionGridPositionList().Contains(gridPosition);
+        }
+
+        public virtual int GetAPCost() {
+            return 1;
         }
 
         public abstract List<GridPosition> GetValidActionGridPositionList();

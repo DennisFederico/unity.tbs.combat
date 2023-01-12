@@ -1,7 +1,6 @@
 using System;
 using narkdagas.tbcs.actions;
 using narkdagas.tbcs.grid;
-using narkdagas.ui;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -18,7 +17,7 @@ namespace narkdagas.tbcs {
 
         private void Awake() {
             if (Instance != null) {
-                Debug.LogError($"There's more than one UnitActionSystem in the scene! {transform} -{Instance}");
+                Debug.LogError($"There's more than one UnitActionSystem in the scene! {transform} - {Instance}");
                 Destroy(gameObject);
                 return;
             }
@@ -55,10 +54,10 @@ namespace narkdagas.tbcs {
         private void HandleSelectedAction() {
             if (Input.GetMouseButtonDown(0) && _selectedAction) {
                 var mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
-                if (_selectedAction.IsValidActionGridPosition(mouseGridPosition)) {
-                    SetActionRunning();
-                    _selectedAction.TakeAction(mouseGridPosition, ClearActionRunning);
-                }
+                if (!_selectedAction.IsValidActionGridPosition(mouseGridPosition)) return;
+                if (!_selectedUnit.TrySpendActionPoints(_selectedAction)) return;
+                SetActionRunning();
+                _selectedAction.TakeAction(mouseGridPosition, ClearActionRunning);
             }
         }
 
@@ -79,7 +78,7 @@ namespace narkdagas.tbcs {
         public Unit GetSelectedUnit() {
             return _selectedUnit;
         }
-        
+
         private void SetSelectedUnit(Unit unit) {
             _selectedUnit = unit;
             SetSelectedAction(_selectedUnit.GetMoveAction());
@@ -89,7 +88,7 @@ namespace narkdagas.tbcs {
         public BaseAction GetSelectedAction() {
             return _selectedAction;
         }
-        
+
         public void SetSelectedAction(BaseAction baseAction) {
             _selectedAction = baseAction;
             OnSelectedActionChanged?.Invoke(this, EventArgs.Empty);

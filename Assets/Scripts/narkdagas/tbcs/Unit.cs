@@ -4,20 +4,25 @@ using UnityEngine;
 
 namespace narkdagas.tbcs {
     public class Unit : MonoBehaviour {
+
+        [SerializeField] private int maxActionPoints = 2;
         private GridPosition _currentGridPosition;
         private MoveAction _moveAction;
         private SpinAction _spinAction;
         private BaseAction[] _baseActions;
+        private int _actionPoints;
 
         private void Awake() {
             _moveAction = GetComponent<MoveAction>();
             _spinAction = GetComponent<SpinAction>();
             _baseActions = GetComponents<BaseAction>();
+            _actionPoints = maxActionPoints;
         }
 
         private void Start() {
             _currentGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
             LevelGrid.Instance.AddUnitAtGridPosition(_currentGridPosition, this);
+            TurnSystem.Instance.OnTurnChanged += (_, _) => _actionPoints = maxActionPoints;
         }
 
         // Update is called once per frame
@@ -45,6 +50,26 @@ namespace narkdagas.tbcs {
             return _currentGridPosition;
         }
 
+        public bool TrySpendActionPoints(BaseAction baseAction) {
+            if (CanSpendActionPoints(baseAction)) {
+                SpendActionPoints(baseAction.GetAPCost());
+                return true;
+            }
+            return false;
+        }
+        
+        public bool CanSpendActionPoints(BaseAction action) {
+            return _actionPoints >= action.GetAPCost();
+        }
+
+        private void SpendActionPoints(int amount) {
+            _actionPoints -= amount;
+        }
+
+        public int GetActionPoints() {
+            return _actionPoints;
+        }
+        
         public override string ToString() {
             return transform.gameObject.name;
         }

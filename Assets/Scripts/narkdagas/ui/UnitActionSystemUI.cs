@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using narkdagas.tbcs;
 using narkdagas.tbcs.actions;
+using TMPro;
 using UnityEngine;
 
 namespace narkdagas.ui {
@@ -10,12 +11,12 @@ namespace narkdagas.ui {
 
         [SerializeField] private RectTransform actionButtonPrefab;
         [SerializeField] private RectTransform actionButtonContainer;
-        [SerializeField] private RectTransform busyImage;
+        [SerializeField] private TextMeshProUGUI apText;
         private List<ActionButtonUI> _actionButtonList;
 
         private void Awake() {
             if (Instance != null) {
-                Debug.LogError($"There's more than one UnitActionSystemUIS in the scene! {transform} -{Instance}");
+                Debug.LogError($"There's more than one UnitActionSystemUIS in the scene! {transform} - {Instance}");
                 Destroy(gameObject);
                 return;
             }
@@ -27,6 +28,7 @@ namespace narkdagas.ui {
             UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
             UnitActionSystem.Instance.OnActionRunningChanged += UnitActionSystem_OnActionRunningChanged;
+            TurnSystem.Instance.OnTurnChanged += (_, _) => UpdateActionPoints();
             CreateUnitActionButtons();
         }
 
@@ -44,21 +46,35 @@ namespace narkdagas.ui {
                     _actionButtonList.Add(actionButtonUI);
                 }
             }
+
+            UpdateActionPoints();
         }
 
         private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs args) {
             CreateUnitActionButtons();
             UpdateSelectedActionVisual();
+            UpdateActionPoints();
         }
 
         private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs args) {
             UpdateSelectedActionVisual();
         }
         
-        public void UnitActionSystem_OnActionRunningChanged(object sender, bool actionRunning) {
+        private void UnitActionSystem_OnActionRunningChanged(object sender, bool actionRunning) {
             SetShowActionsVisual(!actionRunning);
+            UpdateActionPoints();
         }
 
+        private void UpdateActionPoints() {
+            Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
+            if (selectedUnit) {
+                apText.text = $"Remaining APs: {selectedUnit.GetActionPoints()}";
+                SetShowAPText(true);
+            } else {
+                SetShowAPText(false);
+            }
+        }
+        
         public void UpdateSelectedActionVisual() {
             foreach (var actionButtonUI in _actionButtonList) {
                 actionButtonUI.UpdateSelectedVisual();
@@ -69,9 +85,8 @@ namespace narkdagas.ui {
             actionButtonContainer.gameObject.SetActive(show);
         }
 
-        public void ToggleShowActionsVisual() {
-            //busyImage.gameObject.SetActive(!busyImage.gameObject.activeSelf);
-            actionButtonContainer.gameObject.SetActive(!actionButtonContainer.gameObject.activeSelf);
+        public void SetShowAPText(bool show) {
+            apText.gameObject.SetActive(show);
         }
     }
 }

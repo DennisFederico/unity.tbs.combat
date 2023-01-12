@@ -38,5 +38,9 @@ namespace narkdagas.tbcs.actions {
             GridPosition unitGridPosition = Unit.GetGridPosition();
             return new List<GridPosition>() { unitGridPosition };
         }
+
+        public override int GetAPCost() {
+            return 2;
+        }
     }
 }
