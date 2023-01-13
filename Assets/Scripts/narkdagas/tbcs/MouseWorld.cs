@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace narkdagas.tbcs {
     public class MouseWorld : MonoBehaviour {
-
         private static MouseWorld _instance;
 
         public LayerMask validClickMasks;

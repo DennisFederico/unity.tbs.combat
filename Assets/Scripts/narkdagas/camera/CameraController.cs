@@ -1,4 +1,5 @@
 using Cinemachine;
+using UnityEditor;
 using UnityEngine;
 
 namespace narkdagas.camera {
@@ -25,6 +26,7 @@ namespace narkdagas.camera {
         }
 
         void Update() {
+            if (!Application.isFocused) return;
             HandleKeyboardMove();
             HandleMouseMove();
             HandleKeyboardRotation();
@@ -62,15 +64,19 @@ namespace narkdagas.camera {
             if (mousePosition.x >= Screen.width - screenMoveMargin) {
                 moveDir.x = +1;
             }
+
             if (mousePosition.x <= screenMoveMargin) {
                 moveDir.x = -1;
             }
+
             if (mousePosition.y >= Screen.height - screenMoveMargin) {
                 moveDir.z = +1;
             }
+
             if (mousePosition.y <= screenMoveMargin) {
                 moveDir.z = -1;
             }
+
             Vector3 moveVector = transform.forward * moveDir.z + transform.right * moveDir.x;
             transform.position += moveVector * (cameraMoveSpeed * Time.deltaTime);
         }
@@ -84,6 +90,7 @@ namespace narkdagas.camera {
             if (Input.GetKey(KeyCode.E)) {
                 rotation = -1;
             }
+
             transform.Rotate(Vector3.up, rotation * cameraRotationSpeed * Time.deltaTime);
         }
 
@@ -94,9 +101,10 @@ namespace narkdagas.camera {
                 rotation = Input.mousePosition.x - _mousePosition.x;
                 _mousePosition = Input.mousePosition;
             }
+
             transform.Rotate(Vector3.up, rotation * cameraRotationSpeed * Time.deltaTime);
         }
-        
+
         private void HandleKeyboardZoom() {
             float zoom = 0;
             if (Input.GetKey(KeyCode.R)) {

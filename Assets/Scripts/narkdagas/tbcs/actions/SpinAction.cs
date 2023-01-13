@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public class SpinAction : BaseAction {
-        public override event EventHandler ActionStarted;
-        public override event EventHandler ActionCompleted;
-        
+        public event EventHandler SpinActionStarted;
+        public event EventHandler SpinActionCompleted;
+
         private float _totalSpin;
 
         private void Update() {
@@ -33,7 +33,7 @@ namespace narkdagas.tbcs.actions {
             ActionStart(onActionComplete);
             Spin();
         }
-        
+
         public override List<GridPosition> GetValidActionGridPositionList() {
             GridPosition unitGridPosition = Unit.GetGridPosition();
             return new List<GridPosition>() { unitGridPosition };

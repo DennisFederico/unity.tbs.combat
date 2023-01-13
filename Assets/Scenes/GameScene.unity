@@ -288,7 +288,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &70866851
 MonoBehaviour:
@@ -724,7 +724,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.25783807, y: 0.24942784, z: -0.069087505, w: 0.93087715}
+  m_LocalRotation: {x: 0.25783807, y: 0.24942781, z: -0.069087505, w: 0.93087715}
   m_LocalPosition: {x: -2.500001, y: 6, z: -4.6602535}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2199,7 +2199,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1084728959}
-  m_LocalRotation: {x: 0.25783807, y: 0.24942784, z: -0.069087505, w: 0.93087715}
+  m_LocalRotation: {x: 0.25783807, y: 0.24942781, z: -0.069087505, w: 0.93087715}
   m_LocalPosition: {x: -2.500001, y: 6, z: -4.6602535}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2445,6 +2445,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyUnit
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207740023421532058, guid: dea39124d147b4bfa8baf2dc93731e2e,
+        type: 3}
+      propertyPath: health
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dea39124d147b4bfa8baf2dc93731e2e, type: 3}
@@ -3045,15 +3050,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4622809863022323470, guid: 1526898424d394a68b359424a3566233,
+        type: 3}
+      propertyPath: health
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 2108829117121551702, guid: 1526898424d394a68b359424a3566233,
         type: 3}
       propertyPath: maxMoveGridDistance
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2350161054948281764, guid: 1526898424d394a68b359424a3566233,
+        type: 3}
+      propertyPath: shootDamage
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 6483580406351110419, guid: 1526898424d394a68b359424a3566233,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6483580406351110419, guid: 1526898424d394a68b359424a3566233,
         type: 3}

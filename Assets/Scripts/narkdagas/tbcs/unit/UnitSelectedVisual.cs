@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.unit {
     public class UnitSelectedVisual : MonoBehaviour {
         private Unit _unit;
         private MeshRenderer _meshRenderer;
+        private EventHandler _onSelectedUnitChanged;
+        
 
         private void Awake() {
             _unit = GetComponentInParent<Unit>();
@@ -11,15 +14,17 @@ namespace narkdagas.tbcs {
         }
 
         private void Start() {
-            //UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
-            UnitActionSystem.Instance.OnSelectedUnitChanged += (_, _) => {
-                UpdateVisual();
-            };
+            _onSelectedUnitChanged = delegate { UpdateVisual(); }; 
+            UnitActionSystem.Instance.OnSelectedUnitChanged += _onSelectedUnitChanged;
             UpdateVisual();
         }
 
-        private void UpdateVisual () {
+        private void UpdateVisual() {
             _meshRenderer.enabled = UnitActionSystem.Instance.GetSelectedUnit() == _unit;
+        }
+
+        private void OnDestroy() {
+            UnitActionSystem.Instance.OnSelectedUnitChanged -= _onSelectedUnitChanged;
         }
     }
 }

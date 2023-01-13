@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unit = narkdagas.tbcs.unit.Unit;
 
 namespace narkdagas.tbcs.grid {
-    
     public class GridObject {
         //TODO these should be set by the Grid System when adding the GridObject
         private GridSystem _gridSystem;
 
         private GridPosition _gridPosition;
+
         //TODO This should be added to specializations/extensions to the GridObject
         private readonly List<Unit> _unitList;
-        
+
         public GridObject(GridSystem gridSystem, GridPosition gridPosition) {
             _gridSystem = gridSystem;
             _gridPosition = gridPosition;
@@ -22,6 +23,7 @@ namespace narkdagas.tbcs.grid {
             foreach (var unit in _unitList) {
                 units += $"\n{unit}";
             }
+
             return $"{_gridPosition.ToString()}{units}";
         }
 
@@ -42,7 +44,7 @@ namespace narkdagas.tbcs.grid {
         public Unit GetUnit() {
             return HasAnyUnit() ? _unitList[0] : null;
         }
-        
+
         public bool ContainsEnemy(bool isPlayer) {
             return HasAnyUnit() && _unitList[0].IsEnemyUnit() != isPlayer;
         }

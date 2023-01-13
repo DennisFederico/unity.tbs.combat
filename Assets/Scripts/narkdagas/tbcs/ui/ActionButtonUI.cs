@@ -1,4 +1,5 @@
 using narkdagas.tbcs.actions;
+using narkdagas.tbcs.unit;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -7,16 +8,17 @@ using UnityEngine.UI;
 namespace narkdagas.tbcs.ui {
     public class ActionButtonUI : MonoBehaviour {
         [SerializeField] private Button button;
-        [FormerlySerializedAs("text")] [SerializeField] private TextMeshProUGUI buttonText;
+
+        [FormerlySerializedAs("text")] [SerializeField]
+        private TextMeshProUGUI buttonText;
+
         [SerializeField] private Image selectedImage;
         private BaseAction _baseAction;
-        
+
         public void SetBaseAction(BaseAction baseAction) {
             _baseAction = baseAction;
             buttonText.text = baseAction.GetActionNameLabel().ToUpper();
-            button.onClick.AddListener(() => {
-                UnitActionSystem.Instance.SetSelectedAction(baseAction);
-            });
+            button.onClick.AddListener(() => { UnitActionSystem.Instance.SetSelectedAction(baseAction); });
         }
 
         public bool UpdateSelectedVisual() {

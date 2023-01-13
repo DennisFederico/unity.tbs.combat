@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public class MoveAction : BaseAction {
-        public override event EventHandler ActionStarted;
-        public override event EventHandler ActionCompleted;
+        public event EventHandler MoveActionStarted;
+        public event EventHandler MoveActionCompleted;
         [SerializeField] private int maxMoveGridDistance = 4;
         [SerializeField] private float moveSpeed = 4f;
         [SerializeField] private float rotationSpeed = 10f;
@@ -15,7 +15,7 @@ namespace narkdagas.tbcs.actions {
 
         private Vector3 _targetPosition;
         private Vector3 _targetDirection;
-        
+
         protected override void Awake() {
             base.Awake();
             _targetDirection = transform.forward;
@@ -28,7 +28,7 @@ namespace narkdagas.tbcs.actions {
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
             ActionStart(onActionComplete);
-            ActionStarted?.Invoke(this, EventArgs.Empty);
+            MoveActionStarted?.Invoke(this, EventArgs.Empty);
             Move(gridPosition);
         }
 
@@ -46,7 +46,7 @@ namespace narkdagas.tbcs.actions {
                     transform.position += _targetDirection * (moveSpeed * Time.deltaTime);
                 } else {
                     ActionComplete();
-                    ActionCompleted?.Invoke(this, EventArgs.Empty);
+                    MoveActionCompleted?.Invoke(this, EventArgs.Empty);
                 }
             }
         }

@@ -4,7 +4,6 @@ using Object = UnityEngine.Object;
 
 namespace narkdagas.tbcs.grid {
     public struct GridPosition : IEquatable<GridPosition> {
-
         public int X;
         public int Z;
 
@@ -20,19 +19,19 @@ namespace narkdagas.tbcs.grid {
         public static GridPosition operator +(GridPosition a, GridPosition b) {
             return new GridPosition(a.X + b.X, a.Z + b.Z);
         }
-        
+
         public static GridPosition operator -(GridPosition a, GridPosition b) {
             return new GridPosition(a.X - b.X, a.Z - b.Z);
         }
 
-        public static bool operator == (GridPosition a, GridPosition b) {
+        public static bool operator ==(GridPosition a, GridPosition b) {
             return a.X == b.X && a.Z == b.Z;
         }
 
         public static bool operator !=(GridPosition a, GridPosition b) {
-            return !(a==b);
+            return !(a == b);
         }
-        
+
         public bool Equals(GridPosition other) {
             return X == other.X && Z == other.Z;
         }
@@ -44,18 +43,18 @@ namespace narkdagas.tbcs.grid {
         public override int GetHashCode() {
             return HashCode.Combine(X, Z);
         }
-
     }
 
     public struct GridDimension {
         public int Width;
         public int Length;
+
         public GridDimension(int width, int length) {
             Width = width;
             Length = length;
         }
     }
-    
+
     public class GridSystem {
         private GridDimension _gridDimension;
         private float _cellSize;
@@ -72,7 +71,7 @@ namespace narkdagas.tbcs.grid {
             if (debugPrefab) {
                 _debugParent = new GameObject("GridDebugObjects").transform;
             }
-            
+
             for (int x = 0; x < width; x++) {
                 for (int z = 0; z < length; z++) {
                     var gridPosition = new GridPosition(x, z);
@@ -87,12 +86,12 @@ namespace narkdagas.tbcs.grid {
         public GridDimension GetGridDimension() {
             return _gridDimension;
         }
-        
+
         //This returns the center a Vector3 center on the Grid
         private Vector3 GetWorldPosition(int x, int z) {
             return new Vector3(x, .2f, z) * _cellSize;
         }
-        
+
         //This returns the center a Vector3 center on the Grid
         public Vector3 GetWorldPosition(GridPosition gridPosition) {
             return GetWorldPosition(gridPosition.X, gridPosition.Z);
@@ -104,18 +103,18 @@ namespace narkdagas.tbcs.grid {
             //the origin of the cell is at the bottom-left corner (watch the borders might seems "bigger"
             //return new GridPosition((int)(worldPosition.x / _cellSize), (int)(worldPosition.z / _cellSize));
         }
-        
+
         public bool IsValidGridPosition(GridPosition gridPosition) {
             return gridPosition.X >= 0 &&
                    gridPosition.X < _gridDimension.Width &&
                    gridPosition.Z >= 0 &&
                    gridPosition.Z < _gridDimension.Length;
         }
-        
+
         public GridObject GetGridObject(GridPosition gridPosition) {
             return IsValidGridPosition(gridPosition) ? _gridObjects[gridPosition.X, gridPosition.Z] : null;
         }
-        
+
         //TODO MOVE DEBUG STUFF TO A "PARTIAL" FILE?
         private void DebugPaintGridPosition(GridPosition gridPosition) {
             //Assuming the cell origin is at the center
@@ -131,7 +130,7 @@ namespace narkdagas.tbcs.grid {
             //Bottom
             Debug.DrawLine(bottomLeftCorner, bottomLeftCorner + (Vector3.right * _cellSize), Color.white, 1000);
         }
-        
+
         private void DebugCreateDebugGridObject(GridPosition gridPosition, Transform debugPrefab, Transform parent) {
             var instance = Object.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity, parent);
             if (instance.TryGetComponent<GridDebugObject>(out var gdo)) {

@@ -4,12 +4,11 @@ using UnityEngine.UI;
 
 namespace narkdagas.tbcs.ui {
     public class TurnSystemUI : MonoBehaviour {
-
         public static TurnSystemUI Instance { get; private set; }
-        
+
         [SerializeField] private Button endTurnButton;
         [SerializeField] private TextMeshProUGUI textCounter;
-        
+
         private void Awake() {
             if (Instance != null) {
                 Debug.LogError($"There's more than one TurnSystemUI in the scene! {transform} - {Instance}");
@@ -31,7 +30,7 @@ namespace narkdagas.tbcs.ui {
         }
 
         private void UpdateTurnText(bool isPlayerTurn) {
-            string teamLabel = isPlayerTurn ? "Player" : "Enemies" ;
+            string teamLabel = isPlayerTurn ? "Player" : "Enemies";
             textCounter.text = $"TURN {TurnSystem.Instance.GetCurrentTurn()} - ({teamLabel})";
         }
 

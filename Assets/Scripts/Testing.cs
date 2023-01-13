@@ -1,5 +1,6 @@
 using narkdagas.tbcs;
 using narkdagas.tbcs.grid;
+using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace DefaultNamespace {

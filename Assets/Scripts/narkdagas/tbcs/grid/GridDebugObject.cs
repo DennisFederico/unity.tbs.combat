@@ -9,7 +9,7 @@ namespace narkdagas.tbcs.grid {
         private void Awake() {
             _text = GetComponentInChildren<TextMeshPro>();
         }
-        
+
         private void Update() {
             _text.text = _gridObject.ToString();
         }

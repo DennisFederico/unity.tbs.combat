@@ -1,14 +1,21 @@
 using System;
 using System.Collections.Generic;
 using narkdagas.tbcs.grid;
+using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public class ShootAction : BaseAction {
-        public override event EventHandler ActionStarted;
-        public override event EventHandler ActionCompleted;
+        public event EventHandler<ShootActionStartedEventArgs> ShootActionStarted;
+        public event EventHandler ShootActionCompleted;
+
+        public class ShootActionStartedEventArgs : EventArgs {
+            public Unit TargetUnit;
+            public Unit ShootingUnit;
+        }
+        
         [SerializeField] private int maxShootDistance = 7;
-        [SerializeField] private int shootDamage = 2;
+        [SerializeField] private int shootDamage = 20;
 
         private enum State {
             Aiming,
@@ -42,6 +49,7 @@ namespace narkdagas.tbcs.actions {
                         DoShoot();
                         _canShootBullet = false;
                     }
+
                     break;
                 case State.Cooldown:
                     break;
@@ -65,7 +73,7 @@ namespace narkdagas.tbcs.actions {
                     return State.Cooldown;
                 case State.Cooldown:
                     ActionComplete();
-                    ActionCompleted?.Invoke(this, EventArgs.Empty);
+                    ShootActionCompleted?.Invoke(this, EventArgs.Empty);
                     return State.None;
                 default:
                     return State.None;
@@ -82,7 +90,11 @@ namespace narkdagas.tbcs.actions {
         }
 
         private void DoShoot() {
-            ActionStarted?.Invoke(this, EventArgs.Empty);
+            var shootActionStartedEventArgs = new ShootActionStartedEventArgs() {
+                TargetUnit = _targetUnit,
+                ShootingUnit = transform.GetComponent<Unit>()
+            };
+            ShootActionStarted?.Invoke(this, shootActionStartedEventArgs);
             _targetUnit.TakeDamage(shootDamage);
         }
 
@@ -109,7 +121,7 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override int GetAPCost() {
-            return 2;
+            return 1;
         }
     }
 }

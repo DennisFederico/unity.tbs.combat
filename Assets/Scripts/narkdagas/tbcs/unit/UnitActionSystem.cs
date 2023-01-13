@@ -4,7 +4,7 @@ using narkdagas.tbcs.grid;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.unit {
     public class UnitActionSystem : MonoBehaviour {
         public static UnitActionSystem Instance { get; private set; }
         public LayerMask unitLayerMask;

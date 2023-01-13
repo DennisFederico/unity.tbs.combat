@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using narkdagas.tbcs.actions;
+using narkdagas.tbcs.unit;
 using TMPro;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ namespace narkdagas.tbcs.ui {
                 Destroy(gameObject);
                 return;
             }
+
             Instance = this;
             _actionButtonList = new List<ActionButtonUI>();
         }
@@ -27,7 +29,7 @@ namespace narkdagas.tbcs.ui {
             UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
             UnitActionSystem.Instance.OnActionRunningChanged += UnitActionSystem_OnActionRunningChanged;
-            TurnSystem.Instance.OnTurnChanged += (_,_) => UpdateActionPoints();
+            TurnSystem.Instance.OnTurnChanged += (_, _) => UpdateActionPoints();
             CreateUnitActionButtons();
         }
 
@@ -35,6 +37,7 @@ namespace narkdagas.tbcs.ui {
             foreach (RectTransform actionButtonRectTransform in actionButtonContainer) {
                 Destroy(actionButtonRectTransform.gameObject);
             }
+
             _actionButtonList.Clear();
             Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
             if (selectedUnit) {
@@ -58,7 +61,7 @@ namespace narkdagas.tbcs.ui {
         private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs args) {
             UpdateSelectedActionVisual();
         }
-        
+
         private void UnitActionSystem_OnActionRunningChanged(object sender, bool actionRunning) {
             SetShowActionsVisual(!actionRunning);
             UpdateActionPoints();
@@ -73,7 +76,7 @@ namespace narkdagas.tbcs.ui {
                 SetShowAPText(false);
             }
         }
-        
+
         public void UpdateSelectedActionVisual() {
             foreach (var actionButtonUI in _actionButtonList) {
                 actionButtonUI.UpdateSelectedVisual();

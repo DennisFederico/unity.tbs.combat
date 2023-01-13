@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace narkdagas.tbcs.grid {
     public class LevelGrid : MonoBehaviour {
-
         public static LevelGrid Instance { get; private set; }
-        
+
         [SerializeField] private bool debugGrid;
         [SerializeField] private bool debugMousePosition;
         [SerializeField] private Transform debugPrefab;
@@ -13,7 +13,7 @@ namespace narkdagas.tbcs.grid {
         [SerializeField] private int gridLenght;
         [SerializeField] private int gridCellSize;
         private GridSystem _gridSystem;
-        
+
         private void Awake() {
             if (Instance != null) {
                 Debug.LogError($"There's more than one LevelGrid in the scene! {transform} - {Instance}");
@@ -24,16 +24,14 @@ namespace narkdagas.tbcs.grid {
             Instance = this;
             _gridSystem = new GridSystem(gridWidth, gridLenght, gridCellSize, debugGrid, debugPrefab);
         }
-        
+
         void Update() {
             if (debugMousePosition) {
                 var worldPos = MouseWorld.GetPosition();
                 Debug.Log($"pos:{worldPos} | Grid:{GetGridPosition(worldPos)} | center:{_gridSystem.GetWorldPosition(_gridSystem.GetGridPosition(worldPos))}");
             }
 
-            if (debugGrid) {
-                
-            }
+            if (debugGrid) { }
         }
 
         public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit) {
@@ -66,6 +64,5 @@ namespace narkdagas.tbcs.grid {
         public bool IsEnemyAtGridPosition(GridPosition gridPosition, bool isEnemy) => _gridSystem.GetGridObject(gridPosition).ContainsEnemy(isEnemy);
 
         //SHOULD WE HANDLE THE INVOCATIONS TO THE VISUAL SYSTEM TOO?
-
     }
 }

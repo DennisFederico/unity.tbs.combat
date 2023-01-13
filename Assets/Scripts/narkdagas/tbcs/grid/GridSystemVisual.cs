@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace narkdagas.tbcs.grid {
     public class GridSystemVisual : MonoBehaviour {
-        
         public static GridSystemVisual Instance { get; private set; }
-        
+
         [SerializeField] private Transform gridVisualSingle;
         private GridSystemVisualSingle[,] _gridVisualsArray;
         private Transform _visualsParent;
@@ -17,6 +17,7 @@ namespace narkdagas.tbcs.grid {
                 Destroy(gameObject);
                 return;
             }
+
             Instance = this;
         }
 
@@ -45,7 +46,7 @@ namespace narkdagas.tbcs.grid {
         public void ShowGridPositionsVisuals(List<GridPosition> gridPositionList) {
             foreach (var position in gridPositionList) {
                 _gridVisualsArray[position.X, position.Z].Show();
-            }            
+            }
         }
 
         private void UpdateGridVisual() {
@@ -53,7 +54,7 @@ namespace narkdagas.tbcs.grid {
             if (selectedUnit) {
                 HideAllGridVisuals();
                 var gridList = UnitActionSystem.Instance.GetSelectedAction().GetValidActionGridPositionList();
-                ShowGridPositionsVisuals(gridList);                    
+                ShowGridPositionsVisuals(gridList);
             }
         }
     }
