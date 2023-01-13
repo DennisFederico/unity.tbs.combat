@@ -27,9 +27,9 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
-            ActionStart(onActionComplete);
             MoveActionStarted?.Invoke(this, EventArgs.Empty);
             Move(gridPosition);
+            ActionStart(onActionComplete, EventArgs.Empty);
         }
 
         void Update() {

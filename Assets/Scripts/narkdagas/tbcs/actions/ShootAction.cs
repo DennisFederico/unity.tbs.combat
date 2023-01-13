@@ -49,7 +49,6 @@ namespace narkdagas.tbcs.actions {
                         DoShoot();
                         _canShootBullet = false;
                     }
-
                     break;
                 case State.Cooldown:
                     break;
@@ -81,12 +80,15 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
-            ActionStart(onActionComplete);
             _currentState = State.Aiming;
             _targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
             _canShootBullet = true;
             float aimingStateTime = 1f;
             _stateTimer = aimingStateTime;
+            ActionStart(onActionComplete, new ShootActionStartedEventArgs() {
+                TargetUnit = _targetUnit,
+                ShootingUnit = transform.GetComponent<Unit>()
+            });
         }
 
         private void DoShoot() {

@@ -30,8 +30,8 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
-            ActionStart(onActionComplete);
             Spin();
+            ActionStart(onActionComplete, EventArgs.Empty);
         }
 
         public override List<GridPosition> GetValidActionGridPositionList() {
