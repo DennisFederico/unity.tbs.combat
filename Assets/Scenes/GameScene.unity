@@ -288,7 +288,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &70866851
 MonoBehaviour:
@@ -724,7 +724,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.257838, y: 0.24942786, z: -0.06908751, w: 0.93087715}
+  m_LocalRotation: {x: 0.25783807, y: 0.24942781, z: -0.069087505, w: 0.93087715}
   m_LocalPosition: {x: -2.500001, y: 6, z: -4.6602535}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2410,7 +2410,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1084728959}
-  m_LocalRotation: {x: 0.257838, y: 0.24942786, z: -0.06908751, w: 0.93087715}
+  m_LocalRotation: {x: 0.25783807, y: 0.24942781, z: -0.069087505, w: 0.93087715}
   m_LocalPosition: {x: -2.500001, y: 6, z: -4.6602535}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2954,6 +2954,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridVisualSingle: {fileID: 3191301631162376909, guid: f246fbf5e170246a0839444e43600bee,
     type: 3}
+  gridVisualTypeMaterialsList:
+  - gridVisualType: 0
+    material: {fileID: 2100000, guid: 314651ba77a4842ff9b0b3fa41292c7d, type: 2}
+  - gridVisualType: 1
+    material: {fileID: 2100000, guid: 0eb9921004b54497fb0241275a4e9ee2, type: 2}
+  - gridVisualType: 2
+    material: {fileID: 2100000, guid: 70ccfeb1a82374ddd9f5953fc32b967c, type: 2}
+  - gridVisualType: 3
+    material: {fileID: 2100000, guid: 5f82826023d3d4e809db6c99472a0971, type: 2}
+  - gridVisualType: 4
+    material: {fileID: 2100000, guid: 3d3ab803748334b8c9c83e13232c99a3, type: 2}
 --- !u!1 &2062006965
 GameObject:
   m_ObjectHideFlags: 3
@@ -3279,7 +3290,7 @@ PrefabInstance:
     - target: {fileID: 6483580406351110419, guid: 1526898424d394a68b359424a3566233,
         type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 6483580406351110419, guid: 1526898424d394a68b359424a3566233,
         type: 3}

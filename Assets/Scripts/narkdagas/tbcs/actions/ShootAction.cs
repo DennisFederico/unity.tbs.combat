@@ -122,6 +122,10 @@ namespace narkdagas.tbcs.actions {
             return Mathf.Sqrt(x * x + z * z) <= shootDistance;
         }
 
+        public int GetShootRange() {
+            return maxShootDistance;
+        }
+
         public override int GetAPCost() {
             return 1;
         }

@@ -11,7 +11,7 @@ namespace DefaultNamespace {
                 if (selectedUnit != null) {
                     var list = selectedUnit.GetMoveAction().GetValidActionGridPositionList();
                     GridSystemVisual.Instance.HideAllGridVisuals();
-                    GridSystemVisual.Instance.ShowGridPositionsVisuals(list);                    
+                    GridSystemVisual.Instance.ShowGridPositionsVisuals(list, GridSystemVisual.GridVisualType.Blue);                    
                 }
             }
         }

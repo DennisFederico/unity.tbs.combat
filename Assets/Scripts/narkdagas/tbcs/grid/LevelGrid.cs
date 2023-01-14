@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using narkdagas.tbcs.unit;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 namespace narkdagas.tbcs.grid {
     public class LevelGrid : MonoBehaviour {
         public static LevelGrid Instance { get; private set; }
-
+        public event EventHandler OnAnyUnitMovedGridPosition;
         [SerializeField] private bool debugGrid;
         [SerializeField] private bool debugMousePosition;
         [SerializeField] private Transform debugPrefab;
@@ -52,6 +53,7 @@ namespace narkdagas.tbcs.grid {
         public void UnitMovedGridPosition(Unit unit, GridPosition from, GridPosition to) {
             RemoveUnitAtGridPosition(from, unit);
             AddUnitAtGridPosition(to, unit);
+            OnAnyUnitMovedGridPosition?.Invoke(this, EventArgs.Empty);
         }
 
         //PASS THROUGH TO GRID SYSTEM
