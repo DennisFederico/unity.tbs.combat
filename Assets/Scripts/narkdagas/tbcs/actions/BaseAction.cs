@@ -42,5 +42,22 @@ namespace narkdagas.tbcs.actions {
         }
 
         public abstract List<GridPosition> GetValidActionGridPositionList();
+
+        public EnemyAIActionData GetBestEnemyAIAction() {
+            List<EnemyAIActionData> enemyAIActionDataList = new();
+            var validActionGridPositionList = GetValidActionGridPositionList();
+            foreach (GridPosition position in validActionGridPositionList) {
+                enemyAIActionDataList.Add(GetEnemyAIActionData(position));
+            }
+
+            if (enemyAIActionDataList.Count > 0) {
+                enemyAIActionDataList.Sort((a, b) => b.ActionValue - a.ActionValue);
+                return enemyAIActionDataList[0];
+            }
+
+            return null;
+        }
+
+        public abstract EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using narkdagas.tbcs.grid;
+using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
@@ -71,6 +72,15 @@ namespace narkdagas.tbcs.actions {
             }
 
             return validGridPositionList;
+        }
+        
+        public override EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition) {
+            var targetCount = Unit.GetShootAction().GetTargetCountAtGridPosition(gridPosition);
+            
+            return new EnemyAIActionData {
+                GridPosition = gridPosition,
+                ActionValue = targetCount * 10
+            };
         }
     }
 }

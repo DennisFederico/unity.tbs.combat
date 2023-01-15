@@ -99,14 +99,16 @@ namespace narkdagas.tbcs.actions {
             ShootActionStarted?.Invoke(this, shootActionStartedEventArgs);
             _targetUnit.TakeDamage(shootDamage);
         }
-
         public override List<GridPosition> GetValidActionGridPositionList() {
+            return GetValidActionGridPositionList(Unit.GetGridPosition());
+        }
+        
+        public List<GridPosition> GetValidActionGridPositionList(GridPosition gridPosition) {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
-            var unitGridPosition = Unit.GetGridPosition();
 
             for (int x = -maxShootDistance; x <= maxShootDistance; x++) {
                 for (int z = -maxShootDistance; z <= maxShootDistance; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z) + unitGridPosition;
+                    GridPosition gridPositionCandidate = new GridPosition(x, z) + gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         IsInShootingDistance(x, z, maxShootDistance) &&
                         LevelGrid.Instance.IsEnemyAtGridPosition(gridPositionCandidate, Unit.IsEnemyUnit())) {
@@ -128,6 +130,20 @@ namespace narkdagas.tbcs.actions {
 
         public override int GetAPCost() {
             return 1;
+        }
+        
+        public override EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition) {
+            var targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
+            var healthNormalized = targetUnit.GetHealthNormalized();
+
+            return new EnemyAIActionData {
+                GridPosition = gridPosition,
+                ActionValue = 100 + Mathf.RoundToInt((1 - healthNormalized) * 100f));
+            };
+        }
+
+        public int GetTargetCountAtGridPosition(GridPosition gridPosition) {
+            return GetValidActionGridPositionList(gridPosition).Count;
         }
     }
 }

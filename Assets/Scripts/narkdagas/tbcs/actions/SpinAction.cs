@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using narkdagas.tbcs.grid;
+using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
@@ -40,7 +41,14 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override int GetAPCost() {
-            return 2;
+            return 1;
+        }
+
+        public override EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition) {
+            return new EnemyAIActionData {
+                GridPosition = gridPosition,
+                ActionValue = 0
+            };
         }
     }
 }
