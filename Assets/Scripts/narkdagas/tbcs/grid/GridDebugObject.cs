@@ -3,18 +3,15 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.grid {
     public class GridDebugObject : MonoBehaviour {
-        private TextMeshPro _text;
-        private GridObject _gridObject;
 
-        private void Awake() {
-            _text = GetComponentInChildren<TextMeshPro>();
+        [SerializeField] private TextMeshPro gridObjectText;
+        private object _gridObject;
+
+        protected virtual void Update() {
+            gridObjectText.text = _gridObject.ToString();
         }
 
-        private void Update() {
-            _text.text = _gridObject.ToString();
-        }
-
-        public void SetGridObject(GridObject gridObject) {
+        public virtual void SetGridObject(object gridObject) {
             _gridObject = gridObject;
         }
     }

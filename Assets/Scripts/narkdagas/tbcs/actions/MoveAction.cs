@@ -75,7 +75,7 @@ namespace narkdagas.tbcs.actions {
         }
         
         public override EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition) {
-            var targetCount = Unit.GetShootAction().GetTargetCountAtGridPosition(gridPosition);
+            var targetCount = Unit.GetAction<ShootAction>().GetTargetCountAtGridPosition(gridPosition);
             
             return new EnemyAIActionData {
                 GridPosition = gridPosition,

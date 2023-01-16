@@ -138,7 +138,7 @@ namespace narkdagas.tbcs.actions {
 
             return new EnemyAIActionData {
                 GridPosition = gridPosition,
-                ActionValue = 100 + Mathf.RoundToInt((1 - healthNormalized) * 100f));
+                ActionValue = 100 + Mathf.RoundToInt((1 - healthNormalized) * 100f)
             };
         }
 

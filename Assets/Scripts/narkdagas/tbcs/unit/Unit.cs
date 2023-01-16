@@ -12,23 +12,17 @@ namespace narkdagas.tbcs.unit {
 
         [FormerlySerializedAs("isEnemy")] [SerializeField]
         private bool isEnemyUnit;
-
+        
         public event EventHandler OnActionPointsChanged;
 
         [SerializeField] private int maxActionPoints = 2;
         private GridPosition _currentGridPosition;
         private HealthSystem _healthSystem;
-        private MoveAction _moveAction;
-        private SpinAction _spinAction;
-        private ShootAction _shootAction;
         private BaseAction[] _baseActions;
         private int _actionPoints;
 
         private void Awake() {
             _healthSystem = GetComponent<HealthSystem>();
-            _moveAction = GetComponent<MoveAction>();
-            _spinAction = GetComponent<SpinAction>();
-            _shootAction = GetComponent<ShootAction>();
             _baseActions = GetComponents<BaseAction>();
             _actionPoints = maxActionPoints;
         }
@@ -50,21 +44,16 @@ namespace narkdagas.tbcs.unit {
                 LevelGrid.Instance.UnitMovedGridPosition(this, oldGridPosition, newGridPosition);
             }
         }
-
+        
         public BaseAction[] GetActions() {
             return _baseActions;
         }
 
-        public MoveAction GetMoveAction() {
-            return _moveAction;
-        }
-
-        public SpinAction GetSpinAction() {
-            return _spinAction;
-        }
-        
-        public ShootAction GetShootAction() {
-            return _shootAction;
+        public T GetAction<T>() where T : BaseAction {
+            foreach (var baseAction in _baseActions) {
+                if (baseAction is T action) return action;
+            }
+            return null;
         }
 
         public GridPosition GetGridPosition() {

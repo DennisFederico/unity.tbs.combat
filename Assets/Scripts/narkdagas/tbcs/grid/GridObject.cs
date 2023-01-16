@@ -1,18 +1,22 @@
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using Unit = narkdagas.tbcs.unit.Unit;
+using narkdagas.tbcs.unit;
 
 namespace narkdagas.tbcs.grid {
+    
     public class GridObject {
+
+        public static Func<GridSystem<GridObject>, GridPosition, GridObject> CtorFunction = (system, position) => new GridObject(system, position);
+
         //TODO these should be set by the Grid System when adding the GridObject
-        private GridSystem _gridSystem;
+        private GridSystem<GridObject> _gridSystem;
 
         private GridPosition _gridPosition;
 
         //TODO This should be added to specializations/extensions to the GridObject
         private readonly List<Unit> _unitList;
 
-        public GridObject(GridSystem gridSystem, GridPosition gridPosition) {
+        public GridObject(GridSystem<GridObject> gridSystem, GridPosition gridPosition) {
             _gridSystem = gridSystem;
             _gridPosition = gridPosition;
             _unitList = new();

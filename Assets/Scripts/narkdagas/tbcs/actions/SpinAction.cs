@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public class SpinAction : BaseAction {
-        public event EventHandler SpinActionStarted;
-        public event EventHandler SpinActionCompleted;
 
         private float _totalSpin;
 

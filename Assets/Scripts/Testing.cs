@@ -1,17 +1,28 @@
 using narkdagas.tbcs;
 using narkdagas.tbcs.grid;
-using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace DefaultNamespace {
     public class Testing : MonoBehaviour {
         private void Update() {
             if (Input.GetKeyDown(KeyCode.T)) {
-                var selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
-                if (selectedUnit != null) {
-                    var list = selectedUnit.GetMoveAction().GetValidActionGridPositionList();
-                    GridSystemVisual.Instance.HideAllGridVisuals();
-                    GridSystemVisual.Instance.ShowGridPositionsVisuals(list, GridSystemVisual.GridVisualType.Blue);                    
+                GridPosition startGridPosition = new GridPosition(0, 0);
+                GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+
+                GridPosition? prev = null;
+                foreach (var gridPosition in Pathfinding.Instance.FindPath(startGridPosition, mouseGridPosition)) {
+                    if (prev == null) {
+                        prev = gridPosition;
+                        continue;
+                    }
+
+                    Debug.DrawLine(
+                        LevelGrid.Instance.GetGridWorldPosition(prev.Value),
+                        LevelGrid.Instance.GetGridWorldPosition(gridPosition),
+                        Color.black,
+                        10f
+                        );
+                    prev = gridPosition;
                 }
             }
         }

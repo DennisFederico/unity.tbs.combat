@@ -13,7 +13,7 @@ namespace narkdagas.tbcs.grid {
         [SerializeField] private int gridWidth;
         [SerializeField] private int gridLenght;
         [SerializeField] private int gridCellSize;
-        private GridSystem _gridSystem;
+        private GridSystem<GridObject> _gridSystem;
 
         private void Awake() {
             if (Instance != null) {
@@ -23,7 +23,8 @@ namespace narkdagas.tbcs.grid {
             }
 
             Instance = this;
-            _gridSystem = new GridSystem(gridWidth, gridLenght, gridCellSize, debugGrid, debugPrefab);
+            //_gridSystem = new GridSystem<GridObject>(gridWidth, gridLenght, gridCellSize, GridObject.CtorFunction, debugGrid, debugPrefab);
+            _gridSystem = new GridSystem<GridObject>(gridWidth, gridLenght, gridCellSize, GridObject.CtorFunction);
         }
 
         void Update() {
