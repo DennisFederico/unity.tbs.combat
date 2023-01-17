@@ -13,9 +13,10 @@ namespace narkdagas.tbcs.actions {
             public Unit TargetUnit;
             public Unit ShootingUnit;
         }
-        
+
         [SerializeField] private int maxShootDistance = 7;
         [SerializeField] private int shootDamage = 20;
+        [SerializeField] private LayerMask obstacleLayerMask;
 
         private enum State {
             Aiming,
@@ -28,6 +29,7 @@ namespace narkdagas.tbcs.actions {
         private float _stateTimer;
         private Unit _targetUnit;
         private bool _canShootBullet;
+        private static readonly Vector3 ShoulderHeight = Vector3.up * 1.67f;
 
         public override string GetActionNameLabel() {
             return "Shoot";
@@ -49,6 +51,7 @@ namespace narkdagas.tbcs.actions {
                         DoShoot();
                         _canShootBullet = false;
                     }
+
                     break;
                 case State.Cooldown:
                     break;
@@ -99,10 +102,11 @@ namespace narkdagas.tbcs.actions {
             ShootActionStarted?.Invoke(this, shootActionStartedEventArgs);
             _targetUnit.TakeDamage(shootDamage);
         }
+
         public override List<GridPosition> GetValidActionGridPositionList() {
             return GetValidActionGridPositionList(Unit.GetGridPosition());
         }
-        
+
         public List<GridPosition> GetValidActionGridPositionList(GridPosition gridPosition) {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
 
@@ -111,13 +115,27 @@ namespace narkdagas.tbcs.actions {
                     GridPosition gridPositionCandidate = new GridPosition(x, z) + gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         IsInShootingDistance(x, z, maxShootDistance) &&
-                        LevelGrid.Instance.IsEnemyAtGridPosition(gridPositionCandidate, Unit.IsEnemyUnit())) {
+                        LevelGrid.Instance.IsEnemyAtGridPosition(gridPositionCandidate, Unit.IsEnemyUnit()) &&
+                        IsEnemyInSight(gridPositionCandidate)) {
                         validGridPositionList.Add(gridPositionCandidate);
                     }
                 }
             }
-
             return validGridPositionList;
+        }
+
+        private bool IsEnemyInSight(GridPosition gridPosition) {
+            var unitAtGridPosition = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
+            if (unitAtGridPosition.IsEnemyUnit() == Unit.IsEnemyUnit()) return false;
+            
+            var targetUnitVector = unitAtGridPosition.GetWorldPosition() + ShoulderHeight;
+            var unitFireVector = Unit.GetWorldPosition() + ShoulderHeight;
+            var targetDirection = (targetUnitVector - unitFireVector).normalized;
+
+            return !Physics.Raycast(unitFireVector,
+                targetDirection,
+                Vector3.Distance(unitFireVector, targetUnitVector),
+                obstacleLayerMask);
         }
 
         private bool IsInShootingDistance(int x, int z, int shootDistance) {
@@ -131,7 +149,7 @@ namespace narkdagas.tbcs.actions {
         public override int GetAPCost() {
             return 1;
         }
-        
+
         public override EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition) {
             var targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
             var healthNormalized = targetUnit.GetHealthNormalized();

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace narkdagas.tbcs.grid {
 
@@ -34,6 +35,7 @@ namespace narkdagas.tbcs.grid {
         [SerializeField] private LayerMask obstaclesLayerMask;
         [SerializeField] private bool debugGrid;
         [SerializeField] private Transform debugPrefab;
+        public const int PathCostMultiplier = 10;
         private GridDimension _gridDimension;
         private GridSystem<PathNode> _gridSystem;
         
@@ -72,7 +74,7 @@ namespace narkdagas.tbcs.grid {
             }
         }
 
-        public List<GridPosition> FindPath(GridPosition startGridPosition, GridPosition endGridPosition) {
+        public List<GridPosition> FindPath(GridPosition startGridPosition, GridPosition endGridPosition, out int pathCost) {
             ResetGrid();
             
             List<PathNode> openList = new();
@@ -93,6 +95,7 @@ namespace narkdagas.tbcs.grid {
                 
                 if (currentNode == endNode) {
                     //Reached the end found path
+                    pathCost = endNode.FCost;
                     return CalculatePath(endNode);
                 }
 
@@ -115,12 +118,13 @@ namespace narkdagas.tbcs.grid {
             }
 
             //No path found
+            pathCost = 0;
             return null;
         }
 
         private int CalculateDistanceCost(GridPosition a, GridPosition b) {
             GridPosition distance = a - b;
-            int h = (int) (Mathf.Sqrt(distance.X * distance.X + distance.Z * distance.Z) * 10);
+            int h = (int) (Mathf.Sqrt(distance.X * distance.X + distance.Z * distance.Z) * PathCostMultiplier);
             return h;
         }
 
@@ -149,6 +153,14 @@ namespace narkdagas.tbcs.grid {
             }
             gridPositions.Reverse();
             return gridPositions;
+        }
+
+        public bool IsPositionWalkable(GridPosition gridPosition) {
+            return _gridSystem.GetGridObject(gridPosition).IsWalkable;
+        }
+
+        public bool HasPath(GridPosition startPosition, GridPosition targetPosition) {
+            return FindPath(startPosition, targetPosition, out _) != null;
         }
 
         private void ResetGrid() {

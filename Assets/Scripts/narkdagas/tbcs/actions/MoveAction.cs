@@ -14,14 +14,8 @@ namespace narkdagas.tbcs.actions {
         [SerializeField] private float stoppingDistance = .1f;
         [SerializeField] private float stoppingAngle = .1f;
 
-        private Vector3 _targetPosition;
-        private Vector3 _targetDirection;
-
-        protected override void Awake() {
-            base.Awake();
-            _targetDirection = transform.forward;
-            _targetPosition = transform.position;
-        }
+        private List<Vector3> _targetPositionsList;
+        private int _currentPositionIndex;
 
         public override string GetActionNameLabel() {
             return "Move";
@@ -35,26 +29,37 @@ namespace narkdagas.tbcs.actions {
 
         void Update() {
             if (!IsActive) return;
+            
+            Vector3 targetPosition = _targetPositionsList[_currentPositionIndex];
+            Vector3 targetDirection = (_targetPositionsList[_currentPositionIndex] - transform.position).normalized;
             //First Rotate
-            var angle = Vector3.Angle(transform.forward, _targetDirection);
+            var angle = Vector3.Angle(transform.forward, targetDirection);
             if (angle > stoppingAngle) {
-                transform.forward = Vector3.Lerp(transform.forward, _targetDirection, Time.deltaTime * rotationSpeed);
+                transform.forward = Vector3.Lerp(transform.forward, targetDirection, Time.deltaTime * rotationSpeed);
             }
 
             //Only start to move if the facing direction is < 90º
+            
             if (angle < 90) {
-                if (Vector3.Distance(transform.position, _targetPosition) > stoppingDistance) {
-                    transform.position += _targetDirection * (moveSpeed * Time.deltaTime);
+                if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance) {
+                    transform.position += targetDirection * (moveSpeed * Time.deltaTime);
                 } else {
-                    ActionComplete();
-                    MoveActionCompleted?.Invoke(this, EventArgs.Empty);
+                    _currentPositionIndex++;
+                    if (_currentPositionIndex >= _targetPositionsList.Count) {
+                        ActionComplete();
+                        MoveActionCompleted?.Invoke(this, EventArgs.Empty);    
+                    }
                 }
             }
         }
 
-        public void Move(GridPosition gridPosition) {
-            _targetPosition = LevelGrid.Instance.GetGridWorldPosition(gridPosition);
-            _targetDirection = (_targetPosition - transform.position).normalized;
+        private void Move(GridPosition gridPosition) {
+            var pathGridPositions = Pathfinding.Instance.FindPath(Unit.GetGridPosition(), gridPosition, out int _);
+            _currentPositionIndex =  0;
+            _targetPositionsList = new List<Vector3>();
+            foreach (var pathGridPosition in pathGridPositions) {
+                _targetPositionsList.Add(LevelGrid.Instance.GetGridWorldPosition(pathGridPosition));
+            }
         }
 
         public override List<GridPosition> GetValidActionGridPositionList() {
@@ -65,13 +70,21 @@ namespace narkdagas.tbcs.actions {
                 for (int z = -maxMoveGridDistance; z <= maxMoveGridDistance; z++) {
                     GridPosition gridPositionCandidate = new GridPosition(x, z) + unitGridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
-                        LevelGrid.Instance.IsGridPositionFree(gridPositionCandidate)) {
+                        LevelGrid.Instance.IsGridPositionFree(gridPositionCandidate) && 
+                        Pathfinding.Instance.IsPositionWalkable(gridPositionCandidate) &&
+                        GetPathCost(unitGridPosition, gridPositionCandidate) <= maxMoveGridDistance * Pathfinding.PathCostMultiplier &&
+                        Pathfinding.Instance.HasPath(unitGridPosition, gridPositionCandidate)) {
                         validGridPositionList.Add(gridPositionCandidate);
                     }
                 }
             }
 
             return validGridPositionList;
+        }
+
+        private int GetPathCost(GridPosition startGridPosition, GridPosition endGridPosition) {
+            Pathfinding.Instance.FindPath(startGridPosition, endGridPosition, out int pathCost);
+            return pathCost;
         }
         
         public override EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition) {
