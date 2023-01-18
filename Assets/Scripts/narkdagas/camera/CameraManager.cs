@@ -53,6 +53,7 @@ namespace narkdagas.camera {
             };
             BaseAction.OnAnyActionCompleted += _onAnyActionCompletedAction;
             ShootAction.OnAnyShootAction += (_,_) => ShakeCamera();
+            GrenadeProjectile.OnAnyGrenadeExplode += (_, _) => ShakeCamera(5f);
 
             HideActionCamera();
         }

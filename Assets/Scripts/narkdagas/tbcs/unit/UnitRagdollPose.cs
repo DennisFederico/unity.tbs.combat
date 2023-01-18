@@ -9,7 +9,8 @@ namespace narkdagas.tbcs.unit {
         
         public void CopyPose(Transform originalRootBone) {
             CloneTransformChildRecursive(originalRootBone, ragdollRootBone);
-            ApplyForceToRagdoll(ragdollRootBone, force, transform.position, forceRange);
+            Vector3 randomDir = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
+            ApplyForceToRagdoll(ragdollRootBone, force, transform.position + randomDir, forceRange);
         }
 
         private void CloneTransformChildRecursive(Transform original, Transform clone) {

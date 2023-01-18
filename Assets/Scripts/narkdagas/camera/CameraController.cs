@@ -1,4 +1,5 @@
 using Cinemachine;
+using narkdagas.tbcs.grid;
 using UnityEngine;
 
 namespace narkdagas.camera {
@@ -15,9 +16,18 @@ namespace narkdagas.camera {
         private Vector3 _targetFollowOffset;
         private Vector3 _mousePosition = Vector3.zero;
         private bool _mousePositionCaptured;
+        private float _minX, _maxX, _minZ, _maxZ;
 
         private void Awake() {
             _vCameraTransposer = vCamera.GetCinemachineComponent<CinemachineTransposer>();
+            //World Position Bounds
+            var gridDimension = LevelGrid.Instance.GetGridDimension();
+            var bottomLeftCorner = LevelGrid.Instance.GetGridWorldPosition(new GridPosition(0, 0));
+            _minX = bottomLeftCorner.x;
+            _minZ = bottomLeftCorner.z;
+            var topRightCorner = LevelGrid.Instance.GetGridWorldPosition(new GridPosition(gridDimension.Width -1, gridDimension.Length -1));
+            _maxX = topRightCorner.x;
+            _maxZ = topRightCorner.z;
         }
 
         private void Start() {
@@ -53,7 +63,8 @@ namespace narkdagas.camera {
             }
 
             Vector3 moveVector = transform.forward * inputMoveDir.z + transform.right * inputMoveDir.x;
-            transform.position += moveVector * (cameraMoveSpeed * Time.deltaTime);
+            Vector3 unclampedPosition = transform.position + moveVector * (cameraMoveSpeed * Time.deltaTime);
+            transform.position = new Vector3(Mathf.Clamp(unclampedPosition.x, _minX, _maxX), 0, Mathf.Clamp(unclampedPosition.z, _minZ, _maxZ));
         }
 
         private void HandleMouseMove() {

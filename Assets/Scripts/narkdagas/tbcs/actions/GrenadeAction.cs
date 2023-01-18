@@ -20,7 +20,7 @@ namespace narkdagas.tbcs.actions {
         }
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
-            var grenade = Instantiate(grenadeProjectilePrefab, Unit.GetWorldPosition(), Quaternion.identity);
+            var grenade = Instantiate(grenadeProjectilePrefab, Unit.GetWorldPosition() + Vector3.up, Quaternion.identity);
             var grenadeProjectile = grenade.GetComponent<GrenadeProjectile>();
             grenadeProjectile.ThrowTo(gridPosition, blastRadius, damage, ActionComplete);
             ActionStart(onActionComplete, EventArgs.Empty);
@@ -52,6 +52,7 @@ namespace narkdagas.tbcs.actions {
         public override EnemyAIActionData GetEnemyAIActionData(GridPosition gridPosition) {
             return new EnemyAIActionData {
                 GridPosition = gridPosition,
+                //TODO Evaluate by the number of affected units
                 ActionValue = 0
             };
         }
