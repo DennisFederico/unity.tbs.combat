@@ -1,5 +1,4 @@
 using Cinemachine;
-using UnityEditor;
 using UnityEngine;
 
 namespace narkdagas.camera {

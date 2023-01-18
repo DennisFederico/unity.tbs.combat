@@ -1,13 +1,28 @@
 using System;
+using Cinemachine;
 using narkdagas.tbcs.actions;
 using narkdagas.tbcs.unit;
 using UnityEngine;
 
 namespace narkdagas.camera {
     public class CameraManager : MonoBehaviour {
+        public static CameraManager Instance { get; private set; }
         [SerializeField] private GameObject actionCameraGameObject;
+        [SerializeField] private CinemachineImpulseSource actionCameraImpulseSource;
         private EventHandler _onAnyActionStartedAction;
         private EventHandler _onAnyActionCompletedAction;
+
+        
+        private void Awake() {
+            if (Instance != null) {
+                Debug.LogError($"There's more than one CameraManager in the scene! {transform} - {Instance}");
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            actionCameraImpulseSource = GetComponent<CinemachineImpulseSource>();
+        }
 
         private void Start() {
             _onAnyActionStartedAction = (sender, args) => {
@@ -37,6 +52,7 @@ namespace narkdagas.camera {
                 }
             };
             BaseAction.OnAnyActionCompleted += _onAnyActionCompletedAction;
+            ShootAction.OnAnyShootAction += (_,_) => ShakeCamera();
 
             HideActionCamera();
         }
@@ -47,6 +63,10 @@ namespace narkdagas.camera {
 
         private void HideActionCamera() {
             actionCameraGameObject.SetActive(false);
+        }
+
+        public void ShakeCamera(float intensity = 1f) {
+            actionCameraImpulseSource.GenerateImpulse(intensity);
         }
     }
 }

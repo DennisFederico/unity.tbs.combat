@@ -22,15 +22,6 @@ namespace narkdagas.tbcs.unit {
                 Destroy(gameObject, 1f);
                 Instantiate(bulletHitFxPrefab, _targetPosition, Quaternion.identity);
             }
-            // Vector3 moveVector = moveDir * (BulletSpeed * Time.deltaTime);
-            // if (moveVector.magnitude < distanceBefore) {
-            //     transform.position += moveVector;
-            // } else {
-            //     transform.position = _targetPosition;
-            //     _move = false;
-            //     Destroy(gameObject, 1f);
-            //     Instantiate(bulletHitFxPrefab, _targetPosition, Quaternion.identity);
-            // }
         }
 
         public void SetTarget(Vector3 targetPosition) {

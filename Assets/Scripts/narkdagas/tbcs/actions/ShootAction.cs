@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace narkdagas.tbcs.actions {
     public class ShootAction : BaseAction {
+        public static event EventHandler<ShootActionStartedEventArgs> OnAnyShootAction;
         public event EventHandler<ShootActionStartedEventArgs> ShootActionStarted;
         public event EventHandler ShootActionCompleted;
 
@@ -99,7 +100,9 @@ namespace narkdagas.tbcs.actions {
                 TargetUnit = _targetUnit,
                 ShootingUnit = transform.GetComponent<Unit>()
             };
+            OnAnyShootAction?.Invoke(this, shootActionStartedEventArgs);
             ShootActionStarted?.Invoke(this, shootActionStartedEventArgs);
+            //TODO WHERE AND HOW SHOULD WE APPLY A FORCE TO THE RAGDOLL IF IT DIES FROM A BULLET?
             _targetUnit.TakeDamage(shootDamage);
         }
 
