@@ -14,8 +14,8 @@ namespace narkdagas.tbcs.actions {
 
         public override void TakeAction(GridPosition gridPosition, Action onActionComplete) {
             var door = LevelGrid.Instance.GetDoorAtGridPosition(gridPosition);
-            door.Interact(ActionComplete);
             ActionStart(onActionComplete, EventArgs.Empty);
+            door.Interact(ActionComplete);
         }
 
         public override List<GridPosition> GetValidActionGridPositionList() {
@@ -25,7 +25,8 @@ namespace narkdagas.tbcs.actions {
                 for (int z = -_maxInteractDistance; z <= _maxInteractDistance; z++) {
                     GridPosition gridPositionCandidate = new GridPosition(x, z) + Unit.GetGridPosition();
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
-                        LevelGrid.Instance.IsDoorAtGridPosition(gridPositionCandidate)) {
+                        LevelGrid.Instance.IsDoorAtGridPosition(gridPositionCandidate) &&
+                        LevelGrid.Instance.IsGridPositionFree(gridPositionCandidate)) {
                         validGridPositionList.Add(gridPositionCandidate);
                     }
                 }

@@ -10,9 +10,7 @@ namespace narkdagas.tbcs {
         private Animator _animator;
         private static readonly int AnimIsOpen = Animator.StringToHash("IsOpen");
         [SerializeField] private bool isOpen;
-        private Action _onInteractionComplete;
-        private bool _isActive;
-        private float _timer;
+        private readonly float _actionDuration = 0.75f;
 
         private void Awake() {
             _animator = GetComponent<Animator>();
@@ -25,12 +23,8 @@ namespace narkdagas.tbcs {
         }
 
         public void Interact(Action onInteractionComplete) {
-            //if (!_isInteractable) return;
-            _onInteractionComplete = onInteractionComplete;
-            _isActive = true;
-            _timer = .5f;
             Interact(!isOpen);
-            //StartCoroutine(DelayCallback(onComplete, 1f));
+            StartCoroutine(DelayCallback(onInteractionComplete, _actionDuration));
         }
 
         private void Interact(bool open) {
@@ -39,21 +33,10 @@ namespace narkdagas.tbcs {
             Pathfinding.Instance.SetIsPositionWalkable(_currentGridPosition, isOpen);
         }
 
-        private void Update() {
-            if (!_isActive) return;
-            
-            _timer -= Time.deltaTime;
-            if (_timer < 0) {
-                _isActive = false;
-                _onInteractionComplete();
-            }
+        //OPTIONALLY YOU CAN USE A TIMER SET ON INTERACT AND CLOCK IN UPDATE
+        IEnumerator DelayCallback(Action callback, float delaySeconds) {
+            yield return new WaitForSeconds(delaySeconds);
+            callback();
         }
-
-        // IEnumerator DelayCallback(Action callback, float delaySeconds) {
-        //     Debug.Log("Delay Started");
-        //     yield return new WaitForSeconds(delaySeconds);
-        //     Debug.Log("elapsed!!");
-        //     callback();
-        // }
     }
 }
