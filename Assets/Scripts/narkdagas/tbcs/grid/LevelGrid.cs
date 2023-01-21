@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using narkdagas.tbcs.actions;
 using narkdagas.tbcs.unit;
 using UnityEngine;
 
@@ -23,8 +24,7 @@ namespace narkdagas.tbcs.grid {
             }
 
             Instance = this;
-            //_gridSystem = new GridSystem<GridObject>(gridWidth, gridLenght, gridCellSize, GridObject.CtorFunction, debugGrid, debugPrefab);
-            _gridSystem = new GridSystem<GridObject>(gridWidth, gridLenght, gridCellSize, GridObject.CtorFunction);
+            _gridSystem = new GridSystem<GridObject>(gridWidth, gridLenght, gridCellSize, GridObject.CtorFunction, debugGrid, debugPrefab);
         }
 
         void Update() {
@@ -57,14 +57,14 @@ namespace narkdagas.tbcs.grid {
             OnAnyUnitMovedGridPosition?.Invoke(this, EventArgs.Empty);
         }
         
-        public void SetDoorAtGridPosition(GridPosition gridPosition, Door door) {
+        public void SetInteractableAtGridPosition(GridPosition gridPosition, IInteractable interactable) {
             var gridObject = _gridSystem.GetGridObject(gridPosition);
-            gridObject.Door = door;
+            gridObject.Interactable = interactable;
         }
 
-        public Door GetDoorAtGridPosition(GridPosition gridPosition) {
+        public IInteractable GetDoorAtGridPosition(GridPosition gridPosition) {
             var gridObject = _gridSystem.GetGridObject(gridPosition);
-            return gridObject.Door;
+            return gridObject.Interactable;
         }
 
         //PASS THROUGH TO GRID SYSTEM
@@ -75,6 +75,6 @@ namespace narkdagas.tbcs.grid {
         public bool IsGridPositionFree(GridPosition gridPosition) => !_gridSystem.GetGridObject(gridPosition).HasAnyUnit();
         public Unit GetUnitAtGridPosition(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).GetUnit();
         public bool IsEnemyAtGridPosition(GridPosition gridPosition, bool isEnemy) => _gridSystem.GetGridObject(gridPosition).ContainsEnemy(isEnemy);
-        public bool IsDoorAtGridPosition(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).Door != null;
+        public bool IsInteractableAtGridPosition(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).Interactable != null;
     }
 }

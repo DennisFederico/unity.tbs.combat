@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using narkdagas.tbcs.actions;
 using narkdagas.tbcs.unit;
 
 namespace narkdagas.tbcs.grid {
@@ -16,7 +17,7 @@ namespace narkdagas.tbcs.grid {
         //TODO This should be added to specializations/extensions to the GridObject
         private readonly List<Unit> _unitList;
         //TODO Use Interactable instead of door
-        public Door Door { get; set; }
+        public IInteractable Interactable { get; set; }
 
         public GridObject(GridSystem<GridObject> gridSystem, GridPosition gridPosition) {
             _gridSystem = gridSystem;

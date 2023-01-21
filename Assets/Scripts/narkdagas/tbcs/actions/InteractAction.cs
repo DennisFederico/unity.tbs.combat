@@ -25,7 +25,7 @@ namespace narkdagas.tbcs.actions {
                 for (int z = -_maxInteractDistance; z <= _maxInteractDistance; z++) {
                     GridPosition gridPositionCandidate = new GridPosition(x, z) + Unit.GetGridPosition();
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
-                        LevelGrid.Instance.IsDoorAtGridPosition(gridPositionCandidate) &&
+                        LevelGrid.Instance.IsInteractableAtGridPosition(gridPositionCandidate) &&
                         LevelGrid.Instance.IsGridPositionFree(gridPositionCandidate)) {
                         validGridPositionList.Add(gridPositionCandidate);
                     }
@@ -39,10 +39,6 @@ namespace narkdagas.tbcs.actions {
                 GridPosition = gridPosition,
                 ActionValue = 0
             };
-        }
-
-        private void Update() {
-            if (!IsActive) return;
         }
     }
 }

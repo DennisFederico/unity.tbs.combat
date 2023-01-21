@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
+using narkdagas.tbcs.actions;
 using narkdagas.tbcs.grid;
 using UnityEngine;
 
 namespace narkdagas.tbcs {
     //TODO extend from Interactable
-    public class Door : MonoBehaviour {
+    public class Door : MonoBehaviour, IInteractable {
         private GridPosition _currentGridPosition;
         private Animator _animator;
         private static readonly int AnimIsOpen = Animator.StringToHash("IsOpen");
@@ -18,7 +19,7 @@ namespace narkdagas.tbcs {
 
         private void Start() {
             _currentGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
-            LevelGrid.Instance.SetDoorAtGridPosition(_currentGridPosition, this);
+            LevelGrid.Instance.SetInteractableAtGridPosition(_currentGridPosition, this);
             Interact(isOpen);
         }
 
