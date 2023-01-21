@@ -69,6 +69,21 @@ namespace narkdagas.tbcs.grid {
             }
             ShowGridPositionsVisuals(gridPositionList, gridVisualType);
         }
+        
+        public void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType) {
+            
+            List<GridPosition> gridPositionList = new List<GridPosition>();
+
+            for (int x = -range; x <= range; x++) {
+                for (int z = -range; z <= range; z++) {
+                    GridPosition gridPositionCandidate = new GridPosition(x, z) + gridPosition;
+                    if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate)) {
+                        gridPositionList.Add(gridPositionCandidate);
+                    }
+                }
+            }
+            ShowGridPositionsVisuals(gridPositionList, gridVisualType);
+        }
 
         public void ShowGridPositionsVisuals(List<GridPosition> gridPositionList, GridVisualType gridVisualType) {
             foreach (var position in gridPositionList) {
@@ -95,6 +110,13 @@ namespace narkdagas.tbcs.grid {
                     break;
                 case SpinAction:
                     gridVisualType = GridVisualType.Yellow;
+                    break;
+                case GrenadeAction:
+                    gridVisualType = GridVisualType.Yellow;
+                    break;
+                case SwordAction swordAction:
+                    gridVisualType = GridVisualType.Red;
+                    ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), swordAction.GetSwordActionRange(), GridVisualType.RedSoft);
                     break;
             }
             ShowGridPositionsVisuals(gridList, gridVisualType);
