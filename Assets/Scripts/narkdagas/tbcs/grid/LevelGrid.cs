@@ -56,6 +56,16 @@ namespace narkdagas.tbcs.grid {
             AddUnitAtGridPosition(to, unit);
             OnAnyUnitMovedGridPosition?.Invoke(this, EventArgs.Empty);
         }
+        
+        public void SetDoorAtGridPosition(GridPosition gridPosition, Door door) {
+            var gridObject = _gridSystem.GetGridObject(gridPosition);
+            gridObject.Door = door;
+        }
+
+        public Door GetDoorAtGridPosition(GridPosition gridPosition) {
+            var gridObject = _gridSystem.GetGridObject(gridPosition);
+            return gridObject.Door;
+        }
 
         //PASS THROUGH TO GRID SYSTEM
         public GridDimension GetGridDimension() => _gridSystem.GetGridDimension();
@@ -65,7 +75,6 @@ namespace narkdagas.tbcs.grid {
         public bool IsGridPositionFree(GridPosition gridPosition) => !_gridSystem.GetGridObject(gridPosition).HasAnyUnit();
         public Unit GetUnitAtGridPosition(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).GetUnit();
         public bool IsEnemyAtGridPosition(GridPosition gridPosition, bool isEnemy) => _gridSystem.GetGridObject(gridPosition).ContainsEnemy(isEnemy);
-
-        //SHOULD WE HANDLE THE INVOCATIONS TO THE VISUAL SYSTEM TOO?
+        public bool IsDoorAtGridPosition(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).Door != null;
     }
 }

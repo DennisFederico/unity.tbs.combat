@@ -688,6 +688,7 @@ GameObject:
   - component: {fileID: 2350161054948281764}
   - component: {fileID: -2296776267707911441}
   - component: {fileID: -4644461378934540236}
+  - component: {fileID: -3297591050701049729}
   - component: {fileID: 7445857375728237012}
   - component: {fileID: -4622809863022323470}
   - component: {fileID: -931285082718924060}
@@ -729,7 +730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemyUnit: 0
-  maxActionPoints: 2
+  maxActionPoints: 5
 --- !u!65 &-6621717347571088586
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -820,6 +821,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSwordDistance: 1
   damage: 100
+--- !u!114 &-3297591050701049729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6483580406351110420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87fc24fefe31424f9f9d1eba2c6e1a6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7445857375728237012
 MonoBehaviour:
   m_ObjectHideFlags: 0

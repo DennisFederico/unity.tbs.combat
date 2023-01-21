@@ -43,6 +43,11 @@ PrefabInstance:
       propertyPath: isEnemyUnit
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6483580406351110418, guid: 1526898424d394a68b359424a3566233,
+        type: 3}
+      propertyPath: maxActionPoints
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6483580406351110419, guid: 1526898424d394a68b359424a3566233,
         type: 3}
       propertyPath: m_RootOrder

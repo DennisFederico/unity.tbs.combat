@@ -118,6 +118,9 @@ namespace narkdagas.tbcs.grid {
                     gridVisualType = GridVisualType.Red;
                     ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), swordAction.GetSwordActionRange(), GridVisualType.RedSoft);
                     break;
+                case InteractAction:
+                    gridVisualType = GridVisualType.Blue;
+                    break;
             }
             ShowGridPositionsVisuals(gridList, gridVisualType);
         }
