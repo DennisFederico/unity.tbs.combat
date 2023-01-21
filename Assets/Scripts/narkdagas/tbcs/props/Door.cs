@@ -4,7 +4,7 @@ using narkdagas.tbcs.actions;
 using narkdagas.tbcs.grid;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.props {
     //TODO extend from Interactable
     public class Door : MonoBehaviour, IInteractable {
         private GridPosition _currentGridPosition;

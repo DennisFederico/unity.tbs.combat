@@ -3,7 +3,7 @@ using narkdagas.tbcs.actions;
 using narkdagas.tbcs.unit;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.systems {
     public class EnemyAI : MonoBehaviour {
 
         private enum State {

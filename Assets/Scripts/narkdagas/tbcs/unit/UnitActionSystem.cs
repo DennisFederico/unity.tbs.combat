@@ -1,6 +1,7 @@
 using System;
 using narkdagas.tbcs.actions;
 using narkdagas.tbcs.grid;
+using narkdagas.tbcs.systems;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -45,7 +46,7 @@ namespace narkdagas.tbcs.unit {
         }
 
         private bool TryHandleUnitSelection() {
-            if (Input.GetMouseButtonDown(0)) {
+            if (InputManager.Instance.IsLeftMouseButtonDown()) {
                 if (MouseWorld.GetClickDataForMask(out var hit, unitLayerMask)) {
                     if (hit.transform.TryGetComponent(out Unit unit)) {
                         //DONT SELECT THE UNIT IF IT IS ALREADY SELECTED
@@ -61,7 +62,7 @@ namespace narkdagas.tbcs.unit {
         }
 
         private void HandleSelectedAction() {
-            if (Input.GetMouseButtonDown(0) && _selectedAction) {
+            if (InputManager.Instance.IsLeftMouseButtonDown() && _selectedAction) {
                 var mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
                 if (!_selectedAction.IsValidActionGridPosition(mouseGridPosition)) return;
                 if (!_selectedUnit.TrySpendActionPoints(_selectedAction)) return;

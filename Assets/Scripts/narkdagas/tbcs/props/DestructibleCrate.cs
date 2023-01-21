@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.props {
     
     public class DestructibleCrate : MonoBehaviour {
 

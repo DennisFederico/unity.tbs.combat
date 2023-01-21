@@ -4,7 +4,7 @@ using narkdagas.tbcs.actions;
 using narkdagas.tbcs.grid;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.props {
     public class InteractiveCube : MonoBehaviour, IInteractable {
         [SerializeField] private Material greenMaterial;
         [SerializeField] private Material redMaterial;

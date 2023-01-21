@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.systems {
     public class TurnSystem : MonoBehaviour {
         public static TurnSystem Instance { get; private set; }
         public event EventHandler<bool> OnTurnChanged;

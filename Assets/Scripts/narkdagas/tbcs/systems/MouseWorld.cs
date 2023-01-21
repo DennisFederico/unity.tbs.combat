@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.systems {
     public class MouseWorld : MonoBehaviour {
         private static MouseWorld _instance;
 
@@ -20,7 +20,7 @@ namespace narkdagas.tbcs {
         }
 
         public static bool GetClickDataForMask(out RaycastHit hit, LayerMask hitMask) {
-            var screenPointToRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            var screenPointToRay = Camera.main.ScreenPointToRay(InputManager.Instance.GetMouseScreenPosition());
             return Physics.Raycast(screenPointToRay, out hit, float.MaxValue, hitMask);
         }
     }

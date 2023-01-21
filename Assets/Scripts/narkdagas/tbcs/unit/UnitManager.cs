@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using narkdagas.tbcs.unit;
 using UnityEngine;
 
-namespace narkdagas.tbcs {
+namespace narkdagas.tbcs.unit {
     public class UnitManager : MonoBehaviour {
         public static UnitManager Instance { get; private set; }
         private List<Unit> _allUnitsList;

@@ -1,4 +1,5 @@
 using System;
+using narkdagas.tbcs.props;
 using UnityEngine;
 
 namespace narkdagas.tbcs.grid {

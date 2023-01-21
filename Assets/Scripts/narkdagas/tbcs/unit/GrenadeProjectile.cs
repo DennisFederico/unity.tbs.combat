@@ -1,5 +1,6 @@
 using System;
 using narkdagas.tbcs.grid;
+using narkdagas.tbcs.props;
 using Unity.Mathematics;
 using UnityEngine;
 

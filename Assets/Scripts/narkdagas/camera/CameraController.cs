@@ -1,5 +1,6 @@
 using Cinemachine;
 using narkdagas.tbcs.grid;
+using narkdagas.tbcs.systems;
 using UnityEngine;
 
 namespace narkdagas.camera {
@@ -45,31 +46,15 @@ namespace narkdagas.camera {
         }
 
         private void HandleKeyboardMove() {
-            Vector3 inputMoveDir = Vector3.zero;
-            if (Input.GetKey(KeyCode.W)) {
-                inputMoveDir.z = +1;
-            }
-
-            if (Input.GetKey(KeyCode.S)) {
-                inputMoveDir.z = -1;
-            }
-
-            if (Input.GetKey(KeyCode.D)) {
-                inputMoveDir.x = +1;
-            }
-
-            if (Input.GetKey(KeyCode.A)) {
-                inputMoveDir.x = -1;
-            }
-
-            Vector3 moveVector = transform.forward * inputMoveDir.z + transform.right * inputMoveDir.x;
+            var inputMoveDir = InputManager.Instance.GetCameraMove();
+            Vector3 moveVector = transform.forward * inputMoveDir.y + transform.right * inputMoveDir.x;
             Vector3 unclampedPosition = transform.position + moveVector * (cameraMoveSpeed * Time.deltaTime);
             transform.position = new Vector3(Mathf.Clamp(unclampedPosition.x, _minX, _maxX), 0, Mathf.Clamp(unclampedPosition.z, _minZ, _maxZ));
         }
 
         private void HandleMouseMove() {
-            Vector3 moveDir = Vector3.zero;
-            var mousePosition = Input.mousePosition;
+            Vector2 moveDir = Vector2.zero;
+            var mousePosition = InputManager.Instance.GetMouseScreenPosition();
             // Debug.Log($"Mouse {mousePosition} | {Screen.width}x{Screen.height} | {Screen.currentResolution}");
             if (mousePosition.x >= Screen.width - screenMoveMargin) {
                 moveDir.x = +1;
@@ -80,60 +65,43 @@ namespace narkdagas.camera {
             }
 
             if (mousePosition.y >= Screen.height - screenMoveMargin) {
-                moveDir.z = +1;
+                moveDir.y = +1;
             }
 
             if (mousePosition.y <= screenMoveMargin) {
-                moveDir.z = -1;
+                moveDir.y = -1;
             }
 
-            Vector3 moveVector = transform.forward * moveDir.z + transform.right * moveDir.x;
+            Vector3 moveVector = transform.forward * moveDir.y + transform.right * moveDir.x;
             transform.position += moveVector * (cameraMoveSpeed * Time.deltaTime);
         }
 
         private void HandleKeyboardRotation() {
-            float rotation = 0;
-            if (Input.GetKey(KeyCode.Q)) {
-                rotation = +1;
-            }
-
-            if (Input.GetKey(KeyCode.E)) {
-                rotation = -1;
-            }
-
+            var rotation = InputManager.Instance.GetCameraRotation();
             transform.Rotate(Vector3.up, rotation * cameraRotationSpeed * Time.deltaTime);
         }
 
         private void HandleMouseRotation() {
             float rotation = 0;
-            if (Input.GetMouseButtonDown(1)) _mousePosition = Input.mousePosition;
-            if (Input.GetMouseButton(1)) {
-                rotation = Input.mousePosition.x - _mousePosition.x;
-                _mousePosition = Input.mousePosition;
+            if (InputManager.Instance.IsRightMouseButtonDown()) _mousePosition = InputManager.Instance.GetMouseScreenPosition();
+            if (InputManager.Instance.IsRightMouseButtonPressed()) {
+                rotation = InputManager.Instance.GetMouseScreenPosition().x - _mousePosition.x;
+                _mousePosition = InputManager.Instance.GetMouseScreenPosition();
             }
 
             transform.Rotate(Vector3.up, rotation * cameraRotationSpeed * Time.deltaTime);
         }
 
         private void HandleKeyboardZoom() {
-            float zoom = 0;
-            if (Input.GetKey(KeyCode.R)) {
-                zoom = -1;
-            }
-
-            if (Input.GetKey(KeyCode.F)) {
-                zoom = +1;
-            }
-
+            var zoom = InputManager.Instance.GetCameraZoom();
             if (zoom != 0) _targetFollowOffset.y += zoom * cameraZoomFactor;
-
             //TODO Try to zoom over z after z goes over some threshold 
             _targetFollowOffset.y = Mathf.Clamp(_targetFollowOffset.y, minCameraZoomValue, maxCameraZoomValue);
             _vCameraTransposer.m_FollowOffset = Vector3.Lerp(_vCameraTransposer.m_FollowOffset, _targetFollowOffset, Time.deltaTime * cameraZoomSpeed);
         }
 
         private void HandleMouseZoom() {
-            Vector2 mouseScroll = Input.mouseScrollDelta;
+            Vector2 mouseScroll = InputManager.Instance.GetMouseScroll();
             if (mouseScroll.y != 0) _targetFollowOffset.y -= mouseScroll.y;
 
             //TODO Try to zoom over z after z goes over some threshold 
