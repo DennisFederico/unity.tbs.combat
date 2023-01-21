@@ -25,9 +25,13 @@ namespace narkdagas.tbcs.unit {
             if (Vector3.Distance(_targetPosition, _xzPosition) < _reachedTargetDistance) {
                 var colliders = Physics.OverlapSphere(_targetPosition, _radius);
                 foreach (var targetCollider in colliders) {
-                    if (targetCollider.TryGetComponent(out Unit target)) {
+                    if (targetCollider.TryGetComponent(out Unit unit)) {
                         //TODO PUSH THE TARGETS
-                        target.TakeDamage(_damage);
+                        unit.TakeDamage(_damage);
+                    }
+                    if (targetCollider.TryGetComponent(out DestructibleCrate crate)) {
+                        //TODO PUSH THE TARGETS
+                        crate.Damage(_damage);
                     }
                 }
                 OnAnyGrenadeExplode.Invoke(this, EventArgs.Empty);

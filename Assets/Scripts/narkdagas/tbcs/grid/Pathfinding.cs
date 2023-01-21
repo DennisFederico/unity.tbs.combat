@@ -158,6 +158,10 @@ namespace narkdagas.tbcs.grid {
         public bool IsPositionWalkable(GridPosition gridPosition) {
             return _gridSystem.GetGridObject(gridPosition).IsWalkable;
         }
+        
+        public void SetIsPositionWalkable(GridPosition gridPosition, bool isWalkable) {
+            _gridSystem.GetGridObject(gridPosition).IsWalkable = isWalkable;
+        }
 
         public bool HasPath(GridPosition startPosition, GridPosition targetPosition) {
             return FindPath(startPosition, targetPosition, out _) != null;
