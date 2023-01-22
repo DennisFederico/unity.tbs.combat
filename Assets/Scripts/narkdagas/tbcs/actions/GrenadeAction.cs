@@ -10,7 +10,8 @@ namespace narkdagas.tbcs.actions {
         [SerializeField] private int maxThrowDistance = 7;
         [SerializeField] private int blastRadius = 3;
         [SerializeField] private int damage = 30;
-         
+        //TODO IMPLEMENT NUMBER OF GRENADES
+        
         public override string GetActionNameLabel() {
             return "Grenade";
         }

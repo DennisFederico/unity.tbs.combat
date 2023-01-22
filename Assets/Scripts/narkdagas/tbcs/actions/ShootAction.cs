@@ -15,6 +15,7 @@ namespace narkdagas.tbcs.actions {
             public Unit ShootingUnit;
         }
 
+        //TODO IMPLEMENT AMMO COUNT
         [SerializeField] private int maxShootDistance = 7;
         [SerializeField] private int shootDamage = 20;
         [SerializeField] private LayerMask obstacleLayerMask;

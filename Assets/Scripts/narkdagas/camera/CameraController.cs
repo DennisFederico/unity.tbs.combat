@@ -101,8 +101,8 @@ namespace narkdagas.camera {
         }
 
         private void HandleMouseZoom() {
-            Vector2 mouseScroll = InputManager.Instance.GetMouseScroll();
-            if (mouseScroll.y != 0) _targetFollowOffset.y -= mouseScroll.y;
+            var zoom = InputManager.Instance.GetMouseScroll();
+            if (zoom != 0) _targetFollowOffset.y -= zoom;
 
             //TODO Try to zoom over z after z goes over some threshold 
             _targetFollowOffset.y = Mathf.Clamp(_targetFollowOffset.y, minCameraZoomValue, maxCameraZoomValue);
