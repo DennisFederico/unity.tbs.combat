@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using narkdagas.tbcs.actions;
+using narkdagas.tbcs.systems;
 using narkdagas.tbcs.unit;
 using UnityEngine;
 
@@ -10,9 +11,10 @@ namespace narkdagas.tbcs.grid {
 
         [SerializeField] private Transform gridVisualSingle;
         private GridSystemVisualSingle[,] _gridVisualsArray;
+        private GridSystemVisualSingle _lastSelectedGsVisualSingle;
         private Transform _visualsParent;
         [SerializeField] private List<GridVisualTypeMaterial> gridVisualTypeMaterialsList;
-        
+
         public enum GridVisualType {
             White, Blue, Red, RedSoft, Yellow
         }
@@ -46,6 +48,22 @@ namespace narkdagas.tbcs.grid {
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
             LevelGrid.Instance.OnAnyUnitMovedGridPosition += LevelGrid_OnAnyUnitMovedGridPosition;
             UpdateGridVisual();
+        }
+
+        private void Update() {
+            if (_lastSelectedGsVisualSingle) {
+                _lastSelectedGsVisualSingle.HideSelected();
+            }
+            
+            var mouseWorldPosition = MouseWorld.GetPosition();
+            var gridPosition = LevelGrid.Instance.GetGridPosition(mouseWorldPosition);
+            if (LevelGrid.Instance.IsValidGridPosition(gridPosition)) {
+                _lastSelectedGsVisualSingle = _gridVisualsArray[gridPosition.X, gridPosition.Z];
+            }
+
+            if (_lastSelectedGsVisualSingle) {
+                _lastSelectedGsVisualSingle.ShowSelected();
+            }
         }
 
         public void HideAllGridVisuals() {

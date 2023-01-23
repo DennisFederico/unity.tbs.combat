@@ -13,9 +13,9 @@ namespace narkdagas.tbcs.grid {
         [SerializeField] private bool debugMousePosition;
         [SerializeField] private Transform debugPrefab;
         [SerializeField] private int gridWidth;
-        [SerializeField] private int gridLenght;
+        [SerializeField] private int gridLength;
         [SerializeField] private int gridCellSize;
-        private GridSystem<GridObject> _gridSystem;
+        private GridSystemHex<GridObject> _gridSystemHex;
 
         private void Awake() {
             if (Instance != null) {
@@ -25,30 +25,30 @@ namespace narkdagas.tbcs.grid {
             }
 
             Instance = this;
-            _gridSystem = new GridSystem<GridObject>(gridWidth, gridLenght, gridCellSize, GridObject.CtorFunction, debugGrid, debugPrefab);
+            _gridSystemHex = new GridSystemHex<GridObject>(gridWidth, gridLength, gridCellSize, GridObject.CtorFunction, debugGrid, debugPrefab);
         }
 
         void Update() {
             if (debugMousePosition) {
                 var worldPos = MouseWorld.GetPosition();
-                Debug.Log($"pos:{worldPos} | Grid:{GetGridPosition(worldPos)} | center:{_gridSystem.GetWorldPosition(_gridSystem.GetGridPosition(worldPos))}");
+                Debug.Log($"pos:{worldPos} | Grid:{GetGridPosition(worldPos)} | center:{_gridSystemHex.GetWorldPosition(_gridSystemHex.GetGridPosition(worldPos))}");
             }
 
             if (debugGrid) { }
         }
 
         public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit) {
-            var gridObject = _gridSystem.GetGridObject(gridPosition);
+            var gridObject = _gridSystemHex.GetGridObject(gridPosition);
             gridObject.AddUnit(unit);
         }
 
         public List<Unit> GetUnitListAtGridPosition(GridPosition gridPosition) {
-            var gridObject = _gridSystem.GetGridObject(gridPosition);
+            var gridObject = _gridSystemHex.GetGridObject(gridPosition);
             return gridObject.GetUnitList();
         }
 
         public void RemoveUnitAtGridPosition(GridPosition gridPosition, Unit unit) {
-            var gridObject = _gridSystem.GetGridObject(gridPosition);
+            var gridObject = _gridSystemHex.GetGridObject(gridPosition);
             gridObject.RemoveUnit(unit);
         }
 
@@ -59,23 +59,23 @@ namespace narkdagas.tbcs.grid {
         }
         
         public void SetInteractableAtGridPosition(GridPosition gridPosition, IInteractable interactable) {
-            var gridObject = _gridSystem.GetGridObject(gridPosition);
+            var gridObject = _gridSystemHex.GetGridObject(gridPosition);
             gridObject.Interactable = interactable;
         }
 
         public IInteractable GetDoorAtGridPosition(GridPosition gridPosition) {
-            var gridObject = _gridSystem.GetGridObject(gridPosition);
+            var gridObject = _gridSystemHex.GetGridObject(gridPosition);
             return gridObject.Interactable;
         }
 
         //PASS THROUGH TO GRID SYSTEM
-        public GridDimension GetGridDimension() => _gridSystem.GetGridDimension();
-        public GridPosition GetGridPosition(Vector3 worldPos) => _gridSystem.GetGridPosition(worldPos);
-        public Vector3 GetGridWorldPosition(GridPosition gridPosition) => _gridSystem.GetWorldPosition(gridPosition);
-        public bool IsValidGridPosition(GridPosition gridPosition) => _gridSystem.IsValidGridPosition(gridPosition);
-        public bool IsGridPositionFree(GridPosition gridPosition) => !_gridSystem.GetGridObject(gridPosition).HasAnyUnit();
-        public Unit GetUnitAtGridPosition(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).GetUnit();
-        public bool IsEnemyAtGridPosition(GridPosition gridPosition, bool isEnemy) => _gridSystem.GetGridObject(gridPosition).ContainsEnemy(isEnemy);
-        public bool IsInteractableAtGridPosition(GridPosition gridPosition) => _gridSystem.GetGridObject(gridPosition).Interactable != null;
+        public GridDimension GetGridDimension() => _gridSystemHex.GetGridDimension();
+        public GridPosition GetGridPosition(Vector3 worldPos) => _gridSystemHex.GetGridPosition(worldPos);
+        public Vector3 GetGridWorldPosition(GridPosition gridPosition) => _gridSystemHex.GetWorldPosition(gridPosition);
+        public bool IsValidGridPosition(GridPosition gridPosition) => _gridSystemHex.IsValidGridPosition(gridPosition);
+        public bool IsGridPositionFree(GridPosition gridPosition) => !_gridSystemHex.GetGridObject(gridPosition).HasAnyUnit();
+        public Unit GetUnitAtGridPosition(GridPosition gridPosition) => _gridSystemHex.GetGridObject(gridPosition).GetUnit();
+        public bool IsEnemyAtGridPosition(GridPosition gridPosition, bool isEnemy) => _gridSystemHex.GetGridObject(gridPosition).ContainsEnemy(isEnemy);
+        public bool IsInteractableAtGridPosition(GridPosition gridPosition) => _gridSystemHex.GetGridObject(gridPosition).Interactable != null;
     }
 }

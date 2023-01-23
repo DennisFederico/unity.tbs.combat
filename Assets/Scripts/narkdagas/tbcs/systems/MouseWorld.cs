@@ -19,6 +19,7 @@ namespace narkdagas.tbcs.systems {
             return hit.point;
         }
 
+        //TODO USE A SINGLETON, KEEP A REFERENCE OF THE MAIN CAMERA
         public static bool GetClickDataForMask(out RaycastHit hit, LayerMask hitMask) {
             var screenPointToRay = Camera.main.ScreenPointToRay(InputManager.Instance.GetMouseScreenPosition());
             return Physics.Raycast(screenPointToRay, out hit, float.MaxValue, hitMask);

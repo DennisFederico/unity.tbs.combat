@@ -35,9 +35,11 @@ namespace narkdagas.tbcs.grid {
         [SerializeField] private LayerMask obstaclesLayerMask;
         [SerializeField] private bool debugGrid;
         [SerializeField] private Transform debugPrefab;
+        [SerializeField] private bool isHexGrid;
         public const int PathCostMultiplier = 10;
         private GridDimension _gridDimension;
-        private GridSystem<PathNode> _gridSystem;
+        //TODO TYPE OF GRID SQUARE vs. HEX
+        private GridSystemHex<PathNode> _gridSystemHex;
         
 
         private void Awake() {
@@ -51,7 +53,7 @@ namespace narkdagas.tbcs.grid {
         
         private void Start() {
             _gridDimension = LevelGrid.Instance.GetGridDimension();
-            _gridSystem = new GridSystem<PathNode>(_gridDimension.Width, 
+            _gridSystemHex = new GridSystemHex<PathNode>(_gridDimension.Width, 
                 _gridDimension.Length, 
                 _gridDimension.CellSize,
                 ((_, position) => new PathNode(position)),
@@ -68,7 +70,7 @@ namespace narkdagas.tbcs.grid {
                     var worldPosition = LevelGrid.Instance.GetGridWorldPosition(gridPosition);
                     float raycastOffset = .2f;
                     if (Physics.Raycast(worldPosition + (Vector3.down * raycastOffset), Vector3.up, 1f, obstaclesLayerMask)) {
-                        _gridSystem.GetGridObject(gridPosition).IsWalkable = false;
+                        _gridSystemHex.GetGridObject(gridPosition).IsWalkable = false;
                     }
                 }
             }
@@ -80,13 +82,13 @@ namespace narkdagas.tbcs.grid {
             List<PathNode> openList = new();
             List<PathNode> closedList = new();
 
-            PathNode startNode = _gridSystem.GetGridObject(startGridPosition);
-            PathNode endNode = _gridSystem.GetGridObject(endGridPosition);
+            PathNode startNode = _gridSystemHex.GetGridObject(startGridPosition);
+            PathNode endNode = _gridSystemHex.GetGridObject(endGridPosition);
             
             openList.Add(startNode);
 
             startNode.GCost = 0;
-            startNode.HCost = CalculateDistanceCost(startGridPosition, endGridPosition);
+            startNode.HCost = CalculateHeuristicDistanceCost(startGridPosition, endGridPosition);
             startNode.UpdateFCost();
 
             while (openList.Count > 0) {
@@ -103,39 +105,56 @@ namespace narkdagas.tbcs.grid {
                 closedList.Add(currentNode);
                 
                 //Get neighbours
-                foreach (PathNode neighbourNode in GetNeighbourList(currentNode)) {
+                List<PathNode> neighbours = isHexGrid ? GetHexGridNeighbourList(currentNode) : GetSquareGridNeighbourList(currentNode); 
+                foreach (PathNode neighbourNode in neighbours) {
                     if (closedList.Contains(neighbourNode)) continue;
                     if (!neighbourNode.IsWalkable) continue;
-                    int tentativeGCost = currentNode.GCost + CalculateDistanceCost(currentNode.GridPosition, neighbourNode.GridPosition);
+                    int tentativeGCost = currentNode.GCost + (isHexGrid ? PathCostMultiplier : CalculateHeuristicDistanceCost(currentNode.GridPosition, neighbourNode.GridPosition));
                     if (tentativeGCost < neighbourNode.GCost) {
                         neighbourNode.GCost = tentativeGCost;
-                        neighbourNode.HCost = CalculateDistanceCost(neighbourNode.GridPosition, endNode.GridPosition);
+                        neighbourNode.HCost = CalculateHeuristicDistanceCost(neighbourNode.GridPosition, endNode.GridPosition);
                         neighbourNode.UpdateFCost();
                         neighbourNode.PrevNodeInPath = currentNode;
                         if (!openList.Contains(neighbourNode)) openList.Add(neighbourNode);
                     }
                 }
             }
-
             //No path found
             pathCost = 0;
             return null;
         }
 
-        private int CalculateDistanceCost(GridPosition a, GridPosition b) {
+        private int CalculateHeuristicDistanceCost(GridPosition a, GridPosition b) {
+            if (isHexGrid) {
+                return (int) (Vector3.Distance(_gridSystemHex.GetWorldPosition(a), _gridSystemHex.GetWorldPosition(b)) * PathCostMultiplier);
+            }
             GridPosition distance = a - b;
             int h = (int) (Mathf.Sqrt(distance.X * distance.X + distance.Z * distance.Z) * PathCostMultiplier);
             return h;
         }
 
-        private List<PathNode> GetNeighbourList(PathNode pathNode) {
+        private List<PathNode> GetSquareGridNeighbourList(PathNode pathNode) {
             List<PathNode> neighbours = new();
             var currentGridPosition = pathNode.GridPosition;
 
-            foreach (GridPosition neighbour in GridPosition.GridPositionNeighbours) {
+            foreach (GridPosition neighbour in GridPosition.GetSquareGridPositionsNeighbours()) {
                 var nextGridPosition = currentGridPosition + neighbour;
-                if (_gridSystem.IsValidGridPosition(nextGridPosition)) {
-                    neighbours.Add(_gridSystem.GetGridObject(nextGridPosition));
+                if (_gridSystemHex.IsValidGridPosition(nextGridPosition)) {
+                    neighbours.Add(_gridSystemHex.GetGridObject(nextGridPosition));
+                }
+            }
+
+            return neighbours;
+        }
+        
+        private List<PathNode> GetHexGridNeighbourList(PathNode pathNode) {
+            List<PathNode> neighbours = new();
+            var currentGridPosition = pathNode.GridPosition;
+
+            foreach (GridPosition neighbour in GridPosition.GetHexGridPositionsNeighbours(currentGridPosition.Z % 2 == 1)) {
+                var nextGridPosition = currentGridPosition + neighbour;
+                if (_gridSystemHex.IsValidGridPosition(nextGridPosition)) {
+                    neighbours.Add(_gridSystemHex.GetGridObject(nextGridPosition));
                 }
             }
 
@@ -156,11 +175,11 @@ namespace narkdagas.tbcs.grid {
         }
 
         public bool IsPositionWalkable(GridPosition gridPosition) {
-            return _gridSystem.GetGridObject(gridPosition).IsWalkable;
+            return _gridSystemHex.GetGridObject(gridPosition).IsWalkable;
         }
         
         public void SetIsPositionWalkable(GridPosition gridPosition, bool isWalkable) {
-            _gridSystem.GetGridObject(gridPosition).IsWalkable = isWalkable;
+            _gridSystemHex.GetGridObject(gridPosition).IsWalkable = isWalkable;
         }
 
         public bool HasPath(GridPosition startPosition, GridPosition targetPosition) {
@@ -172,7 +191,7 @@ namespace narkdagas.tbcs.grid {
             for (int x = 0; x < _gridDimension.Width; x++) {
                 for (int z = 0; z < _gridDimension.Length; z++) {
                     GridPosition position = new GridPosition(x, z);
-                    PathNode pathNode = _gridSystem.GetGridObject(position);
+                    PathNode pathNode = _gridSystemHex.GetGridObject(position);
                     pathNode.GCost = int.MaxValue;
                     pathNode.HCost = 0;
                     pathNode.UpdateFCost();
