@@ -10,9 +10,9 @@ namespace narkdagas.tbcs.systems {
             _instance = this;
         }
 
-        void Update() {
-            transform.position = MouseWorld.GetPosition();
-        }
+        // void Update() {
+        //     transform.position = MouseWorld.GetPosition();
+        // }
 
         public static Vector3 GetPosition() {
             GetClickDataForMask(out var hit, _instance.validClickMasks);
