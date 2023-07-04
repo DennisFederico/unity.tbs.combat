@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace narkdagas.tbcs.grid {
     public class PathNode {
@@ -36,11 +35,12 @@ namespace narkdagas.tbcs.grid {
         [SerializeField] private LayerMask walkableLayerMask;
         [SerializeField] private bool debugGrid;
         [SerializeField] private Transform debugPrefab;
+        [SerializeField] private Transform pathfindingLinksContainer;
         public const int PathCostMultiplier = 10;
         private GridDimension _gridDimension;
-        private readonly List<GridSystemSquare<PathNode>> _gridSystemSquare = new();
-
-
+        private readonly List<GridSystemSquare<PathNode>> _gridSystem = new();
+        private readonly List<PathfindingLink> _pathfindingLinks = new();
+        
         private void Awake() {
             if (Instance != null) {
                 Debug.LogError($"There's more than one Pathfinding in the scene! {transform} - {Instance}");
@@ -63,9 +63,10 @@ namespace narkdagas.tbcs.grid {
                     (_, position) => new PathNode(position),
                     debugGrid,
                     debugPrefab);
-                _gridSystemSquare.Add(gridSystemSquare);
+                _gridSystem.Add(gridSystemSquare);
             }
             MarkObstacles();
+            CreatePathfindingLinks();
         }
 
         private void MarkObstacles() {
@@ -77,22 +78,28 @@ namespace narkdagas.tbcs.grid {
                         var gridPosition = new GridPosition(x, z, floor);
 
                         //Not walkable by default
-                        _gridSystemSquare[floor].GetGridObject(gridPosition).IsWalkable = false;
+                        _gridSystem[floor].GetGridObject(gridPosition).IsWalkable = false;
 
                         var worldPosition = LevelGrid.Instance.GetGridWorldPosition(gridPosition);
                         float raycastOffset = .3f;
 
                         //RayCast down to see if there's a walkable layer below
                         if (Physics.Raycast(worldPosition + (Vector3.up * raycastOffset), Vector3.down, raycastOffset * 2, walkableLayerMask)) {
-                            _gridSystemSquare[floor].GetGridObject(gridPosition).IsWalkable = true;
+                            _gridSystem[floor].GetGridObject(gridPosition).IsWalkable = true;
                         }
 
                         //RayCast up to see if there's an obstacle above
                         if (Physics.Raycast(worldPosition + (Vector3.down * raycastOffset), Vector3.up, raycastOffset * 2, obstaclesLayerMask)) {
-                            _gridSystemSquare[floor].GetGridObject(gridPosition).IsWalkable = false;
+                            _gridSystem[floor].GetGridObject(gridPosition).IsWalkable = false;
                         }
                     }
                 }
+            }
+        }
+        
+        private void CreatePathfindingLinks() {
+            foreach (var pathfindingLinkMono in pathfindingLinksContainer.GetComponentsInChildren<PathfindingLinkMono>()) {
+                _pathfindingLinks.Add(pathfindingLinkMono.GetPathfindingLink());
             }
         }
 
@@ -102,8 +109,8 @@ namespace narkdagas.tbcs.grid {
             List<PathNode> openList = new();
             List<PathNode> closedList = new();
 
-            PathNode startNode = _gridSystemSquare[startGridPosition.FloorNumber].GetGridObject(startGridPosition);
-            PathNode endNode = _gridSystemSquare[endGridPosition.FloorNumber].GetGridObject(endGridPosition);
+            PathNode startNode = _gridSystem[startGridPosition.FloorNumber].GetGridObject(startGridPosition);
+            PathNode endNode = _gridSystem[endGridPosition.FloorNumber].GetGridObject(endGridPosition);
 
             openList.Add(startNode);
 
@@ -124,8 +131,12 @@ namespace narkdagas.tbcs.grid {
                 openList.Remove(currentNode);
                 closedList.Add(currentNode);
 
+                var neighbours = GetNeighbourList(currentNode);
+                neighbours.AddRange(GetLinkedGridPositions(currentNode.GridPosition)
+                    .Select(gridPosition => _gridSystem[gridPosition.FloorNumber].GetGridObject(gridPosition)));
+                
                 //Get neighbours
-                foreach (PathNode neighbourNode in GetNeighbourList(currentNode)) {
+                foreach (PathNode neighbourNode in neighbours) {
                     if (closedList.Contains(neighbourNode)) continue;
                     if (!neighbourNode.IsWalkable) continue;
                     int tentativeGCost = currentNode.GCost + CalculateDistanceCost(currentNode.GridPosition, neighbourNode.GridPosition);
@@ -143,6 +154,20 @@ namespace narkdagas.tbcs.grid {
             pathCost = 0;
             return null;
         }
+        
+        private List<GridPosition> GetLinkedGridPositions(GridPosition gridPosition) {
+            List<GridPosition> gridPositions = new();
+            //This could be faster if we used a dictionary with a list of the links by current floor or even the actual grid position as the key
+            foreach (var link in _pathfindingLinks) {
+                if (link.GridPositionA == gridPosition) {
+                    gridPositions.Add(link.GridPositionB);
+                } else if (link.GridPositionB == gridPosition) {
+                    gridPositions.Add(link.GridPositionA);
+                }
+            }
+
+            return gridPositions;
+        }
 
         private int CalculateDistanceCost(GridPosition a, GridPosition b) {
             GridPosition distance = a - b;
@@ -155,14 +180,14 @@ namespace narkdagas.tbcs.grid {
             var currentGridPosition = pathNode.GridPosition;
 
             var neighboursGridPositions = GridPosition.GetSquareGridPositionsNeighbours(0);
-            neighboursGridPositions.AddRange(GridPosition.GetSquareGridPositionsNeighbours(1));
-            neighboursGridPositions.AddRange(GridPosition.GetSquareGridPositionsNeighbours(-1));
+            // neighboursGridPositions.AddRange(GridPosition.GetSquareGridPositionsNeighbours(1));
+            // neighboursGridPositions.AddRange(GridPosition.GetSquareGridPositionsNeighbours(-1));
             
             foreach (GridPosition neighbour in neighboursGridPositions) {
                 var nextGridPosition = currentGridPosition + neighbour;
-                if (nextGridPosition.FloorNumber < 0 || nextGridPosition.FloorNumber >= _gridSystemSquare.Count) continue;
-                if (_gridSystemSquare[nextGridPosition.FloorNumber].IsValidGridPosition(nextGridPosition)) {
-                    neighbours.Add(_gridSystemSquare[nextGridPosition.FloorNumber].GetGridObject(nextGridPosition));
+                if (nextGridPosition.FloorNumber < 0 || nextGridPosition.FloorNumber >= _gridSystem.Count) continue;
+                if (_gridSystem[nextGridPosition.FloorNumber].IsValidGridPosition(nextGridPosition)) {
+                    neighbours.Add(_gridSystem[nextGridPosition.FloorNumber].GetGridObject(nextGridPosition));
                 }
             }
 
@@ -184,11 +209,11 @@ namespace narkdagas.tbcs.grid {
         }
 
         public bool IsPositionWalkable(GridPosition gridPosition) {
-            return _gridSystemSquare[gridPosition.FloorNumber].GetGridObject(gridPosition).IsWalkable;
+            return _gridSystem[gridPosition.FloorNumber].GetGridObject(gridPosition).IsWalkable;
         }
 
         public void SetIsPositionWalkable(GridPosition gridPosition, bool isWalkable) {
-            _gridSystemSquare[gridPosition.FloorNumber].GetGridObject(gridPosition).IsWalkable = isWalkable;
+            _gridSystem[gridPosition.FloorNumber].GetGridObject(gridPosition).IsWalkable = isWalkable;
         }
 
         public bool HasPath(GridPosition startPosition, GridPosition targetPosition) {
@@ -202,7 +227,7 @@ namespace narkdagas.tbcs.grid {
                 for (int x = 0; x < _gridDimension.Width; x++) {
                     for (int z = 0; z < _gridDimension.Length; z++) {
                         GridPosition position = new GridPosition(x, z, floor);
-                        PathNode pathNode = _gridSystemSquare[position.FloorNumber].GetGridObject(position);
+                        PathNode pathNode = _gridSystem[position.FloorNumber].GetGridObject(position);
                         pathNode.GCost = int.MaxValue;
                         pathNode.HCost = 0;
                         pathNode.UpdateFCost();
