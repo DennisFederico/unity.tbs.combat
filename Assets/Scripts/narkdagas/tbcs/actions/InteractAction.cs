@@ -23,7 +23,7 @@ namespace narkdagas.tbcs.actions {
             
             for (int x = -_maxInteractDistance; x <= _maxInteractDistance; x++) {
                 for (int z = -_maxInteractDistance; z <= _maxInteractDistance; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z) + Unit.GetGridPosition();
+                    GridPosition gridPositionCandidate = Unit.GetGridPosition() % new GridPosition(x, z, 0);
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         LevelGrid.Instance.IsInteractableAtGridPosition(gridPositionCandidate) &&
                         LevelGrid.Instance.IsGridPositionFree(gridPositionCandidate)) {

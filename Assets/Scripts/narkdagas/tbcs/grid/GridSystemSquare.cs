@@ -19,7 +19,7 @@ namespace narkdagas.tbcs.grid {
 
             for (int x = 0; x < width; x++) {
                 for (int z = 0; z < length; z++) {
-                    var gridPosition = new GridPosition(x, z);
+                    var gridPosition = new GridPosition(x, z,0);
                     _gridObjects[x, z] = createGridObjectFunction(this, gridPosition);
 
                     if (drawGrid) DebugPaintGridPosition(gridPosition);
@@ -44,7 +44,7 @@ namespace narkdagas.tbcs.grid {
 
         public GridPosition GetGridPosition(Vector3 worldPosition) {
             //the origin of the cell is at the center
-            return new GridPosition(Mathf.RoundToInt(worldPosition.x / _gridDimension.CellSize), Mathf.RoundToInt(worldPosition.z / _gridDimension.CellSize));
+            return new GridPosition(Mathf.RoundToInt(worldPosition.x / _gridDimension.CellSize), Mathf.RoundToInt(worldPosition.z / _gridDimension.CellSize), 0);
             //the origin of the cell is at the bottom-left corner (watch the borders might seems "bigger"
             //return new GridPosition((int)(worldPosition.x / _cellSize), (int)(worldPosition.z / _cellSize));
         }

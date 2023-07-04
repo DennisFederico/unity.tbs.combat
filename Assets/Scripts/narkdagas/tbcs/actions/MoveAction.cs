@@ -66,15 +66,17 @@ namespace narkdagas.tbcs.actions {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
             var unitGridPosition = Unit.GetGridPosition();
 
-            for (int x = -maxMoveGridDistance; x <= maxMoveGridDistance; x++) {
-                for (int z = -maxMoveGridDistance; z <= maxMoveGridDistance; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z) + unitGridPosition;
-                    if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
-                        LevelGrid.Instance.IsGridPositionFree(gridPositionCandidate) && 
-                        Pathfinding.Instance.IsPositionWalkable(gridPositionCandidate) &&
-                        GetPathCost(unitGridPosition, gridPositionCandidate) <= maxMoveGridDistance * Pathfinding.PathCostMultiplier &&
-                        Pathfinding.Instance.HasPath(unitGridPosition, gridPositionCandidate)) {
-                        validGridPositionList.Add(gridPositionCandidate);
+            for (int floor = -maxMoveGridDistance; floor <= maxMoveGridDistance; floor++) {
+                for (int x = -maxMoveGridDistance; x <= maxMoveGridDistance; x++) {
+                    for (int z = -maxMoveGridDistance; z <= maxMoveGridDistance; z++) {
+                        GridPosition gridPositionCandidate = unitGridPosition + new GridPosition(x, z, floor);
+                        if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
+                            LevelGrid.Instance.IsGridPositionFree(gridPositionCandidate) &&
+                            Pathfinding.Instance.IsPositionWalkable(gridPositionCandidate) &&
+                            Pathfinding.Instance.HasPath(unitGridPosition, gridPositionCandidate) &&
+                            GetPathCost(unitGridPosition, gridPositionCandidate) <= maxMoveGridDistance * Pathfinding.PathCostMultiplier) {
+                            validGridPositionList.Add(gridPositionCandidate);
+                        }
                     }
                 }
             }

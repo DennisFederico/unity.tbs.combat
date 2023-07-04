@@ -4,16 +4,17 @@ using Object = UnityEngine.Object;
 
 namespace narkdagas.tbcs.grid {
     public class GridSystemHex<TGridObject> where TGridObject : class {
+        private readonly int _floorNumber;
+        private readonly float _floorHeight;
         private readonly GridDimension _gridDimension;
-
-        //private float _cellSize;
         private readonly TGridObject[,] _gridObjects;
         private readonly Transform _debugParent;
         private const float ZOffset = 0.75f;
         private const float XOffset = 0.5f;
 
-        public GridSystemHex(int width, int length, float cellSize, Func<GridSystemHex<TGridObject>, GridPosition, TGridObject> createGridObjectFunction, bool drawGrid = false,
-            Transform debugPrefab = null) {
+        public GridSystemHex(int floorNumber, int width, int length, float cellSize, float floorHeight, Func<GridSystemHex<TGridObject>, GridPosition, TGridObject> createGridObjectFunction, bool drawGrid = false, Transform debugPrefab = null) {
+            _floorNumber = floorNumber;
+            _floorHeight = floorHeight;
             _gridDimension = new GridDimension(width, length, cellSize);
             _gridObjects = new TGridObject[width, length];
 
@@ -23,7 +24,7 @@ namespace narkdagas.tbcs.grid {
 
             for (int x = 0; x < width; x++) {
                 for (int z = 0; z < length; z++) {
-                    var gridPosition = new GridPosition(x, z);
+                    var gridPosition = new GridPosition(x, z, _floorNumber);
                     _gridObjects[x, z] = createGridObjectFunction(this, gridPosition);
 
                     if (drawGrid) DebugPaintGridPosition(gridPosition);
@@ -38,26 +39,28 @@ namespace narkdagas.tbcs.grid {
 
         //This returns the center a Vector3 center on the Grid
         public Vector3 GetWorldPosition(GridPosition gridPosition) {
-            return GetWorldPosition(gridPosition.X, gridPosition.Z);
+            return GetWorldPosition(gridPosition.X, gridPosition.Z, gridPosition.FloorNumber);
         }
 
-        private Vector3 GetWorldPosition(int x, int z) {
+        private Vector3 GetWorldPosition(int x, int z, int floorNumber) {
             float xOffset = (z % 2) * XOffset;
-            return new Vector3(x + xOffset, .0001f, z * ZOffset) * _gridDimension.CellSize;
+            return new Vector3(x + xOffset, .0001f, z * ZOffset) * _gridDimension.CellSize +
+                   new Vector3(0, floorNumber * _floorHeight, 0);
         }
 
         public GridPosition GetGridPosition(Vector3 worldPosition) {
             var aproxGridPosition = new GridPosition(
                 Mathf.RoundToInt(worldPosition.x / _gridDimension.CellSize),
-                Mathf.RoundToInt(worldPosition.z / _gridDimension.CellSize / ZOffset)
+                Mathf.RoundToInt(worldPosition.z / _gridDimension.CellSize / ZOffset),
+                _floorNumber
                 );
             
-            var hexGridPositionsNeighbours = GridPosition.GetHexGridPositionsNeighbours(aproxGridPosition.Z % 2 == 1);
+            var hexGridPositionsNeighbours = GridPosition.GetHexGridPositionsNeighbours(_floorNumber, aproxGridPosition.Z % 2 == 1);
             
             float distance = Vector3.Distance(worldPosition, GetWorldPosition(aproxGridPosition));
             GridPosition closest = aproxGridPosition;
             foreach (GridPosition neighbour in hexGridPositionsNeighbours) {
-                GridPosition gridCandidate = aproxGridPosition + neighbour;
+                GridPosition gridCandidate = aproxGridPosition % neighbour;
                 var newDistance = Vector3.Distance(worldPosition, GetWorldPosition(gridCandidate));
                 if (newDistance < distance) {
                     distance = newDistance;
@@ -72,7 +75,8 @@ namespace narkdagas.tbcs.grid {
             return gridPosition.X >= 0 &&
                    gridPosition.X < _gridDimension.Width &&
                    gridPosition.Z >= 0 &&
-                   gridPosition.Z < _gridDimension.Length;
+                   gridPosition.Z < _gridDimension.Length &&
+                   gridPosition.FloorNumber == _floorNumber;
         }
 
         public TGridObject GetGridObject(GridPosition gridPosition) {

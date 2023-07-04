@@ -10,7 +10,7 @@ namespace narkdagas.tbcs.grid {
         public static GridSystemVisual Instance { get; private set; }
 
         [SerializeField] private Transform gridVisualSingle;
-        private GridSystemVisualSingle[,] _gridVisualsArray;
+        private GridSystemVisualSingle[,,] _gridVisualsArray;
         private GridSystemVisualSingle _lastSelectedGsVisualSingle;
         private Transform _visualsParent;
         [SerializeField] private List<GridVisualTypeMaterial> gridVisualTypeMaterialsList;
@@ -36,35 +36,39 @@ namespace narkdagas.tbcs.grid {
         }
 
         private void Start() {
-            var gridDimension = LevelGrid.Instance.GetGridDimension();
-            _gridVisualsArray = new GridSystemVisualSingle[gridDimension.Width, gridDimension.Length];
+            var gridDimension = LevelGrid.Instance.GetGridDimension(0);
+            _gridVisualsArray = new GridSystemVisualSingle[LevelGrid.Instance.GetNumberOfFloors(), gridDimension.Width, gridDimension.Length];
             _visualsParent = new GameObject("GridVisuals").transform;
-            for (int x = 0; x < gridDimension.Width; x++) {
-                for (int z = 0; z < gridDimension.Length; z++) {
-                    var gridVisual = Instantiate(gridVisualSingle, LevelGrid.Instance.GetGridWorldPosition(new GridPosition(x, z)), Quaternion.identity, _visualsParent);
-                    _gridVisualsArray[x, z] = gridVisual.GetComponent<GridSystemVisualSingle>();
+            for (int y = 0; y < LevelGrid.Instance.GetNumberOfFloors(); y++) {
+                for (int x = 0; x < gridDimension.Width; x++) {
+                    for (int z = 0; z < gridDimension.Length; z++) {
+                        var gridVisual = Instantiate(gridVisualSingle, LevelGrid.Instance.GetGridWorldPosition(new GridPosition(x, z, y)), Quaternion.identity, _visualsParent);
+                        _gridVisualsArray[y, x, z] = gridVisual.GetComponent<GridSystemVisualSingle>();
+                    }
                 }
             }
+
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
             LevelGrid.Instance.OnAnyUnitMovedGridPosition += LevelGrid_OnAnyUnitMovedGridPosition;
             UpdateGridVisual();
         }
 
-        private void Update() {
-            if (_lastSelectedGsVisualSingle) {
-                _lastSelectedGsVisualSingle.HideSelected();
-            }
-            
-            var mouseWorldPosition = MouseWorld.GetPosition();
-            var gridPosition = LevelGrid.Instance.GetGridPosition(mouseWorldPosition);
-            if (LevelGrid.Instance.IsValidGridPosition(gridPosition)) {
-                _lastSelectedGsVisualSingle = _gridVisualsArray[gridPosition.X, gridPosition.Z];
-            }
-
-            if (_lastSelectedGsVisualSingle) {
-                _lastSelectedGsVisualSingle.ShowSelected();
-            }
-        }
+        // private void Update() {
+        //     if (_lastSelectedGsVisualSingle) {
+        //         _lastSelectedGsVisualSingle.HideSelected();
+        //     }
+        //     
+        //     var mouseWorldPosition = MouseWorld.GetPosition();
+        //     var gridPosition = LevelGrid.Instance.GetGridPosition(mouseWorldPosition);
+        //
+        //     if (LevelGrid.Instance.IsValidGridPosition(gridPosition)) {
+        //         _lastSelectedGsVisualSingle = _gridVisualsArray[gridPosition.FloorNumber, gridPosition.X, gridPosition.Z];
+        //     }
+        //
+        //     if (_lastSelectedGsVisualSingle) {
+        //         _lastSelectedGsVisualSingle.ShowSelected();
+        //     }
+        // }
 
         public void HideAllGridVisuals() {
             foreach (var visual in _gridVisualsArray) {
@@ -78,7 +82,7 @@ namespace narkdagas.tbcs.grid {
 
             for (int x = -range; x <= range; x++) {
                 for (int z = -range; z <= range; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z) + gridPosition;
+                    GridPosition gridPositionCandidate = new GridPosition(x, z, gridPosition.FloorNumber) % gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         Mathf.Sqrt(x * x + z * z) <= range ) {
                         gridPositionList.Add(gridPositionCandidate);
@@ -94,7 +98,7 @@ namespace narkdagas.tbcs.grid {
 
             for (int x = -range; x <= range; x++) {
                 for (int z = -range; z <= range; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z) + gridPosition;
+                    GridPosition gridPositionCandidate = new GridPosition(x, z, gridPosition.FloorNumber) % gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate)) {
                         gridPositionList.Add(gridPositionCandidate);
                     }
@@ -105,7 +109,7 @@ namespace narkdagas.tbcs.grid {
 
         public void ShowGridPositionsVisuals(List<GridPosition> gridPositionList, GridVisualType gridVisualType) {
             foreach (var position in gridPositionList) {
-                _gridVisualsArray[position.X, position.Z].Show(GetGridVisualTypeMaterial(gridVisualType));
+                _gridVisualsArray[position.FloorNumber, position.X, position.Z].Show(GetGridVisualTypeMaterial(gridVisualType));
             }
         }
 

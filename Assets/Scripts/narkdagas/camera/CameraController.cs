@@ -22,11 +22,11 @@ namespace narkdagas.camera {
         private void Awake() {
             _vCameraTransposer = vCamera.GetCinemachineComponent<CinemachineTransposer>();
             //World Position Bounds
-            var gridDimension = LevelGrid.Instance.GetGridDimension();
-            var bottomLeftCorner = LevelGrid.Instance.GetGridWorldPosition(new GridPosition(0, 0));
+            var gridDimension = LevelGrid.Instance.GetGridDimension(0);
+            var bottomLeftCorner = LevelGrid.Instance.GetGridWorldPosition(new GridPosition(0, 0, 0));
             _minX = bottomLeftCorner.x;
             _minZ = bottomLeftCorner.z;
-            var topRightCorner = LevelGrid.Instance.GetGridWorldPosition(new GridPosition(gridDimension.Width -1, gridDimension.Length -1));
+            var topRightCorner = LevelGrid.Instance.GetGridWorldPosition(new GridPosition(gridDimension.Width -1, gridDimension.Length -1, 0));
             _maxX = topRightCorner.x;
             _maxZ = topRightCorner.z;
         }

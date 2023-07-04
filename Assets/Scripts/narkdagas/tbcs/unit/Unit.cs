@@ -34,6 +34,7 @@ namespace narkdagas.tbcs.unit {
             TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
             _healthSystem.OnDead += HealthSystem_OnDead;
             OnAnyUnitSpawn?.Invoke(this, EventArgs.Empty);
+            //Debug.Log(_currentGridPosition);
         }
 
         // Update is called once per frame

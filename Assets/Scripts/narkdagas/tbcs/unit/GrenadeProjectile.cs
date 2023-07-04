@@ -60,7 +60,7 @@ namespace narkdagas.tbcs.unit {
             _heightProportion = _totalDistance > 4.5 ? _maxHeight : _totalDistance > 3.5 ? _maxHeight / 2 : _maxHeight / 4;
             _onGrenadeCompleteCallback = onGrenadeCompleteCallback;
             //GridPosition "cellsize" must be taken into account
-            _radius = radius * LevelGrid.Instance.GetGridDimension().CellSize;
+            _radius = radius * LevelGrid.Instance.GetGridDimension(targetGridPosition.FloorNumber).CellSize;
             _damage = dmg;
         }
     }
