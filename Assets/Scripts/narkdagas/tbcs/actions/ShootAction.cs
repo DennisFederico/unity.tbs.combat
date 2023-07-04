@@ -116,7 +116,7 @@ namespace narkdagas.tbcs.actions {
 
             for (int x = -maxShootDistance; x <= maxShootDistance; x++) {
                 for (int z = -maxShootDistance; z <= maxShootDistance; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z) + gridPosition;
+                    GridPosition gridPositionCandidate = new GridPosition(x, z, 0) + gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         IsInShootingDistance(x, z, maxShootDistance) &&
                         LevelGrid.Instance.IsEnemyAtGridPosition(gridPositionCandidate, Unit.IsEnemyUnit()) &&

@@ -7,10 +7,10 @@ namespace narkdagas.tbcs.grid {
     
     public class GridObject {
 
-        public static Func<GridSystem<GridObject>, GridPosition, GridObject> CtorFunction = (system, position) => new GridObject(system, position);
+        public static Func<GridSystemSquare<GridObject>, GridPosition, GridObject> CtorFunction = (system, position) => new GridObject(system, position);
 
         //TODO these should be set by the Grid System when adding the GridObject
-        private GridSystem<GridObject> _gridSystem;
+        private GridSystemSquare<GridObject> gridSystemSquare;
 
         private GridPosition _gridPosition;
 
@@ -19,8 +19,8 @@ namespace narkdagas.tbcs.grid {
         //TODO Use Interactable instead of door
         public IInteractable Interactable { get; set; }
 
-        public GridObject(GridSystem<GridObject> gridSystem, GridPosition gridPosition) {
-            _gridSystem = gridSystem;
+        public GridObject(GridSystemSquare<GridObject> gridSystemSquare, GridPosition gridPosition) {
+            this.gridSystemSquare = gridSystemSquare;
             _gridPosition = gridPosition;
             _unitList = new();
         }

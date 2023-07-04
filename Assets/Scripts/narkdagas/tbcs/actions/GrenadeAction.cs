@@ -36,7 +36,7 @@ namespace narkdagas.tbcs.actions {
             
             for (int x = -maxThrowDistance; x <= maxThrowDistance; x++) {
                 for (int z = -maxThrowDistance; z <= maxThrowDistance; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z) + gridPosition;
+                    GridPosition gridPositionCandidate = new GridPosition(x, z, 0) + gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         IsInThrowDistance(x, z, maxThrowDistance)) {
                         validGridPositionList.Add(gridPositionCandidate);
