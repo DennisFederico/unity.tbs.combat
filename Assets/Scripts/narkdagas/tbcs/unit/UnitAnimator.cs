@@ -54,7 +54,7 @@ namespace narkdagas.tbcs.unit {
             animator.SetTrigger(AnimShoot);
             var bullet = Instantiate(bulletProjectilePrefab, shootPoint.position, Quaternion.identity);
             var targetPosition = args.TargetUnit.GetWorldPosition();
-            targetPosition.y = shootPoint.position.y; // Level to the bullet height
+            targetPosition += args.TargetOffset; // Level to the bullet height
             bullet.GetComponent<BulletProjectile>().SetTarget(targetPosition);
         }
 

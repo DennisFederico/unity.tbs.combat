@@ -33,16 +33,19 @@ namespace narkdagas.tbcs.actions {
         
         public List<GridPosition> GetValidActionGridPositionList(GridPosition gridPosition) {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
-            
-            for (int x = -maxThrowDistance; x <= maxThrowDistance; x++) {
-                for (int z = -maxThrowDistance; z <= maxThrowDistance; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z, 0) + gridPosition;
-                    if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
-                        IsInThrowDistance(x, z, maxThrowDistance)) {
-                        validGridPositionList.Add(gridPositionCandidate);
+
+            for (int floor = -maxThrowDistance; floor <= maxThrowDistance; floor++) {
+                for (int x = -maxThrowDistance; x <= maxThrowDistance; x++) {
+                    for (int z = -maxThrowDistance; z <= maxThrowDistance; z++) {
+                        GridPosition gridPositionCandidate = new GridPosition(x, z, floor) + gridPosition;
+                        if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
+                            IsInThrowDistance(x, z, maxThrowDistance)) {
+                            validGridPositionList.Add(gridPositionCandidate);
+                        }
                     }
                 }
             }
+
             return validGridPositionList;
         }
         
