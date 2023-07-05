@@ -9595,6 +9595,7 @@ GameObject:
   - component: {fileID: 1780328178}
   - component: {fileID: 1780328177}
   - component: {fileID: 1780328179}
+  - component: {fileID: 1780328180}
   m_Layer: 6
   m_Name: PlaneHex
   m_TagString: Untagged
@@ -9688,6 +9689,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 2.220446e-16, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1780328180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780328174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b36cafd6f3584b97a3e0687ea7b176cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dynamicVisibility: 0
+  renderersToIgnore: []
 --- !u!4 &1872669932 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4883762814713038, guid: baebdd3b26f756b4c8f1b2d2efe1cf42,

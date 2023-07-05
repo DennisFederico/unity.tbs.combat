@@ -37,7 +37,7 @@ namespace narkdagas.tbcs.grid {
 
         void Update() {
             if (debugMousePosition) {
-                var mousePos = MouseWorld.GetPosition();
+                var mousePos = MouseWorld.GetVisiblePosition();
                 var floor = Mathf.RoundToInt(mousePos.y / FloorHeight);
                 var gridPosition = (floor < 0 || floor >= numFloors) ? new GridPosition() : _gridSystem[floor].GetGridPosition(mousePos);
                 var worldCenter = (floor < 0 || floor >= numFloors) ? Vector3.zero : _gridSystem[floor].GetWorldPosition(gridPosition);

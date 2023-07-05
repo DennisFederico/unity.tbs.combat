@@ -49,7 +49,8 @@ namespace narkdagas.tbcs.grid {
             }
 
             UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
-            LevelGrid.Instance.OnAnyUnitMovedGridPosition += LevelGrid_OnAnyUnitMovedGridPosition;
+            UnitActionSystem.Instance.OnActionRunningChanged += UnitActionSystem_OnActionRunningChanged;
+            //LevelGrid.Instance.OnAnyUnitMovedGridPosition += /**/LevelGrid_OnAnyUnitMovedGridPosition;
             UpdateGridVisual();
         }
 
@@ -150,7 +151,11 @@ namespace narkdagas.tbcs.grid {
         private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs args) {
             UpdateGridVisual();
         }
-
+        
+        private void UnitActionSystem_OnActionRunningChanged(object sender, bool isRunning) {
+            if (!isRunning) UpdateGridVisual();
+        }
+        
         private void LevelGrid_OnAnyUnitMovedGridPosition(object sender, EventArgs args) {
             UpdateGridVisual();
         }
