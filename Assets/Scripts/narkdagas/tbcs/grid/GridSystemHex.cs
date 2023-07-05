@@ -55,12 +55,13 @@ namespace narkdagas.tbcs.grid {
                 _floorNumber
                 );
             
-            var hexGridPositionsNeighbours = GridPosition.GetHexGridPositionsNeighbours(_floorNumber, aproxGridPosition.Z % 2 == 1);
+            //Use zero as the floor number because we are only interested in the x and z coordinates
+            var hexGridPositionsNeighbours = GridPosition.GetHexGridPositionsNeighbours(0, aproxGridPosition.Z % 2 == 1);
             
             float distance = Vector3.Distance(worldPosition, GetWorldPosition(aproxGridPosition));
             GridPosition closest = aproxGridPosition;
             foreach (GridPosition neighbour in hexGridPositionsNeighbours) {
-                GridPosition gridCandidate = aproxGridPosition % neighbour;
+                GridPosition gridCandidate = aproxGridPosition + neighbour;
                 var newDistance = Vector3.Distance(worldPosition, GetWorldPosition(gridCandidate));
                 if (newDistance < distance) {
                     distance = newDistance;

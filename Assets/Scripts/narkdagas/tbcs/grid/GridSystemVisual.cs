@@ -82,7 +82,7 @@ namespace narkdagas.tbcs.grid {
 
             for (int x = -range; x <= range; x++) {
                 for (int z = -range; z <= range; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z, gridPosition.FloorNumber) % gridPosition;
+                    GridPosition gridPositionCandidate = new GridPosition(x, z, gridPosition.FloorNumber) + gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         Mathf.Sqrt(x * x + z * z) <= range ) {
                         gridPositionList.Add(gridPositionCandidate);
@@ -98,7 +98,7 @@ namespace narkdagas.tbcs.grid {
 
             for (int x = -range; x <= range; x++) {
                 for (int z = -range; z <= range; z++) {
-                    GridPosition gridPositionCandidate = new GridPosition(x, z, gridPosition.FloorNumber) % gridPosition;
+                    GridPosition gridPositionCandidate = new GridPosition(x, z, gridPosition.FloorNumber) + gridPosition;
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate)) {
                         gridPositionList.Add(gridPositionCandidate);
                     }

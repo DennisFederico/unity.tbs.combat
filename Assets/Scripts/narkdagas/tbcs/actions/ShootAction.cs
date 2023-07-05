@@ -13,6 +13,7 @@ namespace narkdagas.tbcs.actions {
         public class ShootActionStartedEventArgs : EventArgs {
             public Unit TargetUnit;
             public Unit ShootingUnit;
+            public Vector3 TargetOffset;
         }
 
         //TODO IMPLEMENT AMMO COUNT
@@ -45,8 +46,9 @@ namespace narkdagas.tbcs.actions {
             switch (_currentState) {
                 case State.Aiming:
                     Vector3 aimDir = (_targetUnit.GetWorldPosition() - transform.position).normalized;
+                    aimDir.y = 0;
                     float rotateSpeed = 10f;
-                    transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
+                    transform.forward = Vector3.Slerp(transform.forward, aimDir, Time.deltaTime * rotateSpeed);
                     break;
                 case State.Shooting:
                     if (_canShootBullet) {
@@ -99,7 +101,8 @@ namespace narkdagas.tbcs.actions {
         private void DoShoot() {
             var shootActionStartedEventArgs = new ShootActionStartedEventArgs() {
                 TargetUnit = _targetUnit,
-                ShootingUnit = transform.GetComponent<Unit>()
+                ShootingUnit = transform.GetComponent<Unit>(),
+                TargetOffset = ShoulderHeight
             };
             OnAnyShootAction?.Invoke(this, shootActionStartedEventArgs);
             ShootActionStarted?.Invoke(this, shootActionStartedEventArgs);
@@ -114,17 +117,21 @@ namespace narkdagas.tbcs.actions {
         public List<GridPosition> GetValidActionGridPositionList(GridPosition gridPosition) {
             List<GridPosition> validGridPositionList = new List<GridPosition>();
 
-            for (int x = -maxShootDistance; x <= maxShootDistance; x++) {
-                for (int z = -maxShootDistance; z <= maxShootDistance; z++) {
-                    GridPosition gridPositionCandidate = gridPosition % new GridPosition(x, z, 0);
-                    if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
-                        IsInShootingDistance(x, z, maxShootDistance) &&
-                        LevelGrid.Instance.IsEnemyAtGridPosition(gridPositionCandidate, Unit.IsEnemyUnit()) &&
-                        IsEnemyInSight(gridPositionCandidate)) {
-                        validGridPositionList.Add(gridPositionCandidate);
+            for (int floor = -maxShootDistance; floor <= maxShootDistance; floor++) {
+                for (int x = -maxShootDistance; x <= maxShootDistance; x++) {
+                    for (int z = -maxShootDistance; z <= maxShootDistance; z++) {
+                        var targetGridPosition = new GridPosition(x, z, floor);
+                        GridPosition gridPositionCandidate = targetGridPosition + gridPosition;
+                        if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
+                            IsInShootingDistance(targetGridPosition, maxShootDistance) &&
+                            LevelGrid.Instance.IsEnemyAtGridPosition(gridPositionCandidate, Unit.IsEnemyUnit()) &&
+                            IsEnemyInSight(gridPositionCandidate)) {
+                            validGridPositionList.Add(gridPositionCandidate);
+                        }
                     }
                 }
             }
+
             return validGridPositionList;
         }
 
@@ -142,8 +149,12 @@ namespace narkdagas.tbcs.actions {
                 obstacleLayerMask);
         }
 
-        private bool IsInShootingDistance(int x, int z, int shootDistance) {
-            return Mathf.Sqrt(x * x + z * z) <= shootDistance;
+        private bool IsInShootingDistance(GridPosition gridPosition, int shootDistance) {
+            return IsInShootingDistance(gridPosition.X, gridPosition.FloorNumber, gridPosition.Z, shootDistance);
+        }
+
+        private bool IsInShootingDistance(int x, int y, int z, int shootDistance) {
+            return (x * x + y * y + z * z) <= shootDistance * shootDistance;
         }
 
         public int GetShootRange() {

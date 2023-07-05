@@ -46,9 +46,9 @@ namespace narkdagas.tbcs.grid {
             return new GridPosition(a.X + b.X, a.Z + b.Z, a.FloorNumber + b.FloorNumber);
         }
         
-        public static GridPosition operator %(GridPosition a, GridPosition b) {
-            return new GridPosition(a.X + b.X, a.Z + b.Z, a.FloorNumber);
-        }
+        // public static GridPosition operator %(GridPosition a, GridPosition b) {
+        //     return new GridPosition(a.X + b.X, a.Z + b.Z, a.FloorNumber);
+        // }
 
         public static GridPosition operator -(GridPosition a, GridPosition b) {
             return new GridPosition(a.X - b.X, a.Z - b.Z, a.FloorNumber - b.FloorNumber);

@@ -13,11 +13,14 @@ namespace narkdagas.tbcs.unit {
         private static readonly int AnimIsWalking = Animator.StringToHash("IsWalking");
         private static readonly int AnimShoot = Animator.StringToHash("Shoot");
         private static readonly int AnimSlash = Animator.StringToHash("SwordSlash");
+        private static readonly int AnimJumpUp = Animator.StringToHash("JumpUp");
+        private static readonly int AnimJumpDown = Animator.StringToHash("JumpDown");
 
         private void Awake() {
             if (TryGetComponent(out MoveAction moveAction)) {
                 moveAction.MoveActionStarted += MoveMoveActionMoveActionStarted;
                 moveAction.MoveActionCompleted += MoveMoveActionMoveActionCompleted;
+                moveAction.JumpActionStarted += MoveMoveActionJumpActionStarted;
             }
 
             if (TryGetComponent(out ShootAction shootAction)) {
@@ -42,12 +45,16 @@ namespace narkdagas.tbcs.unit {
         private void MoveMoveActionMoveActionCompleted(object sender, EventArgs args) {
             animator.SetBool(AnimIsWalking, false);
         }
+        
+        private void MoveMoveActionJumpActionStarted(object sender, MoveAction.JumpActionEventArgs args) {
+            animator.SetTrigger(args.CurrentGridPosition.FloorNumber < args.TargetGridPosition.FloorNumber ? AnimJumpUp : AnimJumpDown);
+        }
 
         private void ShootShootActionShootActionStarted(object sender, ShootAction.ShootActionStartedEventArgs args) {
             animator.SetTrigger(AnimShoot);
             var bullet = Instantiate(bulletProjectilePrefab, shootPoint.position, Quaternion.identity);
             var targetPosition = args.TargetUnit.GetWorldPosition();
-            targetPosition.y = shootPoint.position.y; // Level to the bullet height
+            targetPosition += args.TargetOffset;
             bullet.GetComponent<BulletProjectile>().SetTarget(targetPosition);
         }
 

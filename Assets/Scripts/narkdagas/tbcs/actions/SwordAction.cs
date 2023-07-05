@@ -48,7 +48,7 @@ namespace narkdagas.tbcs.actions {
             
             for (int x = -maxSwordDistance; x <= maxSwordDistance; x++) {
                 for (int z = -maxSwordDistance; z <= maxSwordDistance; z++) {
-                    GridPosition gridPositionCandidate = Unit.GetGridPosition() % new GridPosition(x, z, 0);
+                    GridPosition gridPositionCandidate = Unit.GetGridPosition() + new GridPosition(x, z, 0);
                     if (LevelGrid.Instance.IsValidGridPosition(gridPositionCandidate) &&
                         LevelGrid.Instance.IsEnemyAtGridPosition(gridPositionCandidate, Unit.IsEnemyUnit())) {
                         validGridPositionList.Add(gridPositionCandidate);
