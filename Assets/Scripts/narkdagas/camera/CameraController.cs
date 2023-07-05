@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace narkdagas.camera {
     public class CameraController : MonoBehaviour {
+        
+        public static CameraController Instance { get; private set; }
+        
         [SerializeField] private float cameraMoveSpeed = 10f;
         [SerializeField] private float cameraRotationSpeed = 100f;
         [SerializeField] private float cameraZoomFactor = .25f;
@@ -20,6 +23,13 @@ namespace narkdagas.camera {
         private float _minX, _maxX, _minZ, _maxZ;
 
         private void Awake() {
+                        
+            if (Instance != null) {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            
             _vCameraTransposer = vCamera.GetCinemachineComponent<CinemachineTransposer>();
             //World Position Bounds
             var gridDimension = LevelGrid.Instance.GetGridDimension(0);
@@ -107,6 +117,10 @@ namespace narkdagas.camera {
             //TODO Try to zoom over z after z goes over some threshold 
             _targetFollowOffset.y = Mathf.Clamp(_targetFollowOffset.y, minCameraZoomValue, maxCameraZoomValue);
             _vCameraTransposer.m_FollowOffset = Vector3.Lerp(_vCameraTransposer.m_FollowOffset, _targetFollowOffset, Time.deltaTime * cameraZoomSpeed);
+        }
+        
+        public float GetCameraHeight() {
+            return _vCameraTransposer.m_FollowOffset.y;
         }
     }
 }

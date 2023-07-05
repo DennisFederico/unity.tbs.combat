@@ -23,5 +23,20 @@ namespace narkdagas.tbcs.systems {
             var screenPointToRay = Camera.main.ScreenPointToRay(InputManager.Instance.GetMouseScreenPosition());
             return Physics.Raycast(screenPointToRay, out hit, float.MaxValue, hitMask);
         }
+        
+        public static Vector3 GetVisiblePosition() {
+            var screenPointToRay = Camera.main.ScreenPointToRay(InputManager.Instance.GetMouseScreenPosition());
+            var hits = Physics.RaycastAll(screenPointToRay, float.MaxValue, _instance.validClickMasks);
+            //Sort by distance
+            System.Array.Sort(hits, (x, y) => Mathf.RoundToInt(x.distance - y.distance));
+            foreach (var hit in hits) {
+                if (hit.transform.TryGetComponent<Renderer>(out var renderer)) {
+                    if (renderer.enabled) {
+                        return hit.point;
+                    }
+                }
+            }
+            return Vector3.zero;
+        }
     }
 }

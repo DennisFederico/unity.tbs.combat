@@ -63,7 +63,7 @@ namespace narkdagas.tbcs.unit {
 
         private void HandleSelectedAction() {
             if (InputManager.Instance.IsLeftMouseButtonDown() && _selectedAction) {
-                var mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
+                var mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetVisiblePosition());
                 if (!_selectedAction.IsValidActionGridPosition(mouseGridPosition)) return;
                 if (!_selectedUnit.TrySpendActionPoints(_selectedAction)) return;
                 SetActionRunning();

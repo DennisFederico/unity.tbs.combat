@@ -987,7 +987,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.25783807, y: 0.2494278, z: -0.0690875, w: 0.93087715}
+  m_LocalRotation: {x: 0.25783807, y: 0.24942784, z: -0.069087505, w: 0.93087715}
   m_LocalPosition: {x: -2.500001, y: 6, z: -4.6602535}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3800,6 +3800,7 @@ GameObject:
   - component: {fileID: 717608433}
   - component: {fileID: 717608431}
   - component: {fileID: 717608436}
+  - component: {fileID: 717608437}
   m_Layer: 6
   m_Name: Plane (1)
   m_TagString: Untagged
@@ -3905,6 +3906,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 2.220446e-16, z: 9.999999}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &717608437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717608430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e178cbd9b10f4dcfa37544d0b932c39e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dynamicVisibility: 0
+  renderersToIgnore: []
 --- !u!1 &739633307
 GameObject:
   m_ObjectHideFlags: 0
@@ -6445,7 +6460,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1084728959}
-  m_LocalRotation: {x: 0.25783807, y: 0.2494278, z: -0.0690875, w: 0.93087715}
+  m_LocalRotation: {x: 0.25783807, y: 0.24942784, z: -0.069087505, w: 0.93087715}
   m_LocalPosition: {x: -2.500001, y: 6, z: -4.6602535}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9955,6 +9970,7 @@ GameObject:
   - component: {fileID: 1644677623}
   - component: {fileID: 1644677621}
   - component: {fileID: 1644677626}
+  - component: {fileID: 1644677627}
   m_Layer: 6
   m_Name: Plane (2)
   m_TagString: Untagged
@@ -10060,6 +10076,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 2.220446e-16, z: 9.999999}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1644677627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644677620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e178cbd9b10f4dcfa37544d0b932c39e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dynamicVisibility: 0
+  renderersToIgnore: []
 --- !u!1 &1649438018
 GameObject:
   m_ObjectHideFlags: 0
