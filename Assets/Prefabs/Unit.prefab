@@ -907,7 +907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e178cbd9b10f4dcfa37544d0b932c39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dynamicVisibility: 1
+  dynamicVisibility: 0
   renderersToIgnore:
   - {fileID: 7726059279854105905}
 --- !u!1 &6572933569544576449

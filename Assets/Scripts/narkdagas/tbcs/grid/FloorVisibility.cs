@@ -9,7 +9,8 @@ namespace narkdagas.tbcs.grid {
         [SerializeField] private List<Renderer> renderersToIgnore;
         private Renderer[] _childRenderers;
         private int _floorNumber;
-        private readonly float _heightOffset = 2f;
+        private readonly float _heightOffset = 1f;
+        private bool _isCurrentlyVisible = true;
 
         private void Awake() {
             _childRenderers = GetComponentsInChildren<Renderer>(true);
@@ -26,11 +27,12 @@ namespace narkdagas.tbcs.grid {
             var cameraHeight = CameraController.Instance.GetCameraHeight();
             _floorNumber = dynamicVisibility ? LevelGrid.Instance.GetFloor(transform.position) : _floorNumber;
             bool showObject = _floorNumber == 0 || _floorNumber * LevelGrid.FloorHeight <= cameraHeight - _heightOffset;
-            if (showObject) {
+            if (showObject && !_isCurrentlyVisible) {
                 Show();
-            } else {
+            } else if (!showObject && _isCurrentlyVisible) {
                 Hide();
             }
+            _isCurrentlyVisible = showObject;
         }
 
         private void Show() {

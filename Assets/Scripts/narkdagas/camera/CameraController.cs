@@ -120,7 +120,8 @@ namespace narkdagas.camera {
         }
         
         public float GetCameraHeight() {
-            return _vCameraTransposer.m_FollowOffset.y;
+            return _targetFollowOffset.y;
+            //return _vCameraTransposer.m_FollowOffset.y;
         }
     }
 }
